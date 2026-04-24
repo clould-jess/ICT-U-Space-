@@ -1,2 +1,2 @@
 # ICT-U-Space-
-School App
+flexible classroom management system
