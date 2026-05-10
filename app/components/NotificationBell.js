@@ -23,7 +23,9 @@ export default function NotificationBell() {
         onClick={() => { setIsOpen(!isOpen); setUnread(0); }}
         style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', padding: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <span style={{ fontSize: '1.5rem' }}>🔔</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-primary)' }}>
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeDasharray="3 3"/>
+        </svg>
         {unread > 0 && (
           <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--accent-orange)', color: 'white', borderRadius: '50%', width: '18px', height: '18px', fontSize: '0.65rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
             {unread}

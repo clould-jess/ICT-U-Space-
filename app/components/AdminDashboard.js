@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 
-export default function AdminDashboard({ session, initialHalls, initialCourses }) {
+export default function AdminDashboard({ session, initialHalls, initialCourses, initialUsers, activeTab }) {
   const [halls, setHalls] = useState(initialHalls);
   const [courses, setCourses] = useState(initialCourses);
-  const [activeTab, setActiveTab] = useState('halls');
+  const [users, setUsers] = useState(initialUsers || []);
   
   // New Hall state
   const [hallName, setHallName] = useState('');
@@ -17,6 +17,7 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
   const [courseCode, setCourseCode] = useState('');
   const [courseName, setCourseName] = useState('');
   const [courseEnrolled, setCourseEnrolled] = useState('');
+  const [courseLecturerId, setCourseLecturerId] = useState('');
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,6 +25,28 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
 
   const [editingHallId, setEditingHallId] = useState(null);
   const [editCapacity, setEditCapacity] = useState('');
+  
+  const [updatingUserId, setUpdatingUserId] = useState(null);
+
+  const handleUpdateRole = async (userId, newRole) => {
+    setUpdatingUserId(userId); setError(''); setSuccess('');
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/role`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      
+      setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
+      setSuccess('User role updated successfully!');
+    } catch (err) {
+      setError(err.message || 'Failed to update role');
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
 
   const handleUpdateCapacity = async (hallId) => {
     setLoading(true); setError(''); setSuccess('');
@@ -77,6 +100,10 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
 
   const handleAddCourse = async (e) => {
     e.preventDefault();
+    if (!courseLecturerId) {
+      setError('Please select a lecturer for the course');
+      return;
+    }
     setLoading(true); setError(''); setSuccess('');
     try {
       const res = await fetch('/api/admin/courses', {
@@ -86,16 +113,34 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
           code: courseCode,
           name: courseName,
           enrolled_count: parseInt(courseEnrolled),
-          lecturer_id: session.id // Assign to admin for prototype to save time
+          lecturer_id: courseLecturerId
         })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setCourses([...courses, data]);
       setSuccess('Course added successfully!');
-      setCourseCode(''); setCourseName(''); setCourseEnrolled('');
+      setCourseCode(''); setCourseName(''); setCourseEnrolled(''); setCourseLecturerId('');
     } catch (err) {
       setError(err.message || 'Failed to add course');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteCourse = async (courseId) => {
+    if (!confirm('Are you sure you want to delete this course? This will also delete any related timetable entries and reservations.')) return;
+    setLoading(true); setError(''); setSuccess('');
+    try {
+      const res = await fetch(`/api/admin/courses?id=${courseId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setCourses(courses.filter(c => c.id !== courseId));
+      setSuccess('Course deleted successfully!');
+    } catch (err) {
+      setError(err.message || 'Failed to delete course');
     } finally {
       setLoading(false);
     }
@@ -107,28 +152,13 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
         <h2 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--primary-blue)', letterSpacing: '-0.025em' }}>Admin Dashboard</h2>
       </div>
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '2px solid var(--border-color)', paddingBottom: '1rem' }}>
-        <button 
-          onClick={() => { setActiveTab('halls'); setError(''); setSuccess(''); }} 
-          style={{ padding: '0.75rem 1.5rem', fontWeight: '700', borderRadius: '8px', cursor: 'pointer', border: 'none', background: activeTab === 'halls' ? 'rgba(30, 58, 138, 0.1)' : 'transparent', color: activeTab === 'halls' ? 'var(--primary-blue)' : 'var(--text-secondary)', transition: 'all 0.2s' }}
-        >
-          Manage Spaces
-        </button>
-        <button 
-          onClick={() => { setActiveTab('courses'); setError(''); setSuccess(''); }} 
-          style={{ padding: '0.75rem 1.5rem', fontWeight: '700', borderRadius: '8px', cursor: 'pointer', border: 'none', background: activeTab === 'courses' ? 'rgba(30, 58, 138, 0.1)' : 'transparent', color: activeTab === 'courses' ? 'var(--primary-blue)' : 'var(--text-secondary)', transition: 'all 0.2s' }}
-        >
-          Manage Courses
-        </button>
-      </div>
-
       {error && <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontWeight: '600' }}>{error}</div>}
       {success && <div style={{ backgroundColor: '#d1fae5', color: '#065f46', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontWeight: '600' }}>✓ {success}</div>}
 
       {activeTab === 'halls' ? (
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           {/* Add Hall Form */}
-          <div className="card" style={{ flex: 1, minWidth: '300px', position: 'sticky', top: '2rem' }}>
+          <div className="card" style={{ flex: 1, minWidth: '300px' }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', color: 'var(--primary-blue)', letterSpacing: '-0.01em' }}>Add New Space</h3>
             <form onSubmit={handleAddHall} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
@@ -192,10 +222,10 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
             ))}
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'courses' ? (
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           {/* Add Course Form */}
-          <div className="card" style={{ flex: 1, minWidth: '300px', position: 'sticky', top: '2rem' }}>
+          <div className="card" style={{ flex: 1, minWidth: '300px' }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', color: 'var(--primary-blue)', letterSpacing: '-0.01em' }}>Add New Course</h3>
             <form onSubmit={handleAddCourse} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
@@ -209,6 +239,15 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
               <div>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Enrolled Students</label>
                 <input type="number" required value={courseEnrolled} onChange={e => setCourseEnrolled(e.target.value)} className="input-field" placeholder="e.g. 150" />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Lecturer</label>
+                <select required value={courseLecturerId} onChange={e => setCourseLecturerId(e.target.value)} className="input-field">
+                  <option value="">Select a Lecturer</option>
+                  {users.filter(u => u.role === 'LECTURER' || u.role === 'ADMIN').map(user => (
+                    <option key={user.id} value={user.id}>{user.name}</option>
+                  ))}
+                </select>
               </div>
               <button type="submit" disabled={loading} className="btn-primary" style={{ marginTop: '0.5rem', padding: '1rem', fontSize: '1.05rem' }}>
                 {loading ? 'Adding...' : 'Save Course'}
@@ -225,9 +264,64 @@ export default function AdminDashboard({ session, initialHalls, initialCourses }
                   <h4 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.25rem' }}>{course.code} - {course.name}</h4>
                   {course.lecturer && <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Lecturer: {course.lecturer.name}</p>}
                 </div>
-                <span className="badge" style={{ backgroundColor: 'var(--text-primary)', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>{course.enrolled_count} students</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <span className="badge" style={{ backgroundColor: 'var(--text-primary)', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>{course.enrolled_count} students</span>
+                  <button 
+                    onClick={() => handleDeleteCourse(course.id)}
+                    style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '4px', padding: '0.4rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    title="Delete Course"
+                    disabled={loading}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                </div>
               </div>
             ))}
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gap: '1rem' }}>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '0.5rem', color: 'var(--primary-blue)' }}>User Management</h3>
+          <div className="card" style={{ padding: '1.25rem', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                  <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Name</th>
+                  <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Email</th>
+                  <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Current Role</th>
+                  <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                    <td style={{ padding: '1rem', fontWeight: '500' }}>{user.name}</td>
+                    <td style={{ padding: '1rem' }}>{user.email}</td>
+                    <td style={{ padding: '1rem' }}>
+                      <span className="badge" style={{ backgroundColor: 'var(--surface-color)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}>{user.role}</span>
+                    </td>
+                    <td style={{ padding: '1rem' }}>
+                      {user.id !== session.id ? (
+                        <select 
+                          disabled={updatingUserId === user.id}
+                          value={user.role}
+                          onChange={(e) => handleUpdateRole(user.id, e.target.value)}
+                          className="input-field"
+                          style={{ padding: '0.4rem 0.8rem', width: 'auto', background: 'var(--surface-color)' }}
+                        >
+                          <option value="STUDENT">Student</option>
+                          <option value="PREFECT">Prefect</option>
+                          <option value="LECTURER">Lecturer</option>
+                          <option value="ADMIN">Admin</option>
+                        </select>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>It's you</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

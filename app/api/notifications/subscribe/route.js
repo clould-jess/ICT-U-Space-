@@ -11,6 +11,11 @@ export async function POST(request) {
 
     const subscription = await request.json();
 
+    const user = await prisma.user.findUnique({ where: { id: session.id } });
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'User not found. Please log in again.' }), { status: 404 });
+    }
+
     await prisma.user.update({
       where: { id: session.id },
       data: { push_subscription: JSON.stringify(subscription) }
