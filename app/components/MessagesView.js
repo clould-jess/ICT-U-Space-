@@ -5,10 +5,7 @@ export default function MessagesView({ session }) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-<<<<<<< HEAD
   const [searchQuery, setSearchQuery] = useState('');
-=======
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -21,7 +18,6 @@ export default function MessagesView({ session }) {
     try {
       const res = await fetch('/api/messages');
       const data = await res.json();
-<<<<<<< HEAD
       if (Array.isArray(data)) {
         setMessages(data);
       }
@@ -29,20 +25,12 @@ export default function MessagesView({ session }) {
     } catch (err) {
       console.error('Failed to fetch messages', err);
       setIsLoading(false);
-=======
-      setMessages(data);
-      setIsLoading(false);
-    } catch (err) {
-      console.error('Failed to fetch messages', err);
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
     }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-
-<<<<<<< HEAD
     const content = newMessage.trim();
     const tempMessage = {
       id: `temp-${Date.now()}`,
@@ -51,31 +39,15 @@ export default function MessagesView({ session }) {
       created_at: new Date().toISOString()
     };
 
-=======
-    const tempMessage = {
-      id: Date.now(),
-      content: newMessage,
-      sender: { name: session.name, id: session.id },
-      created_at: new Date().toISOString()
-    };
-    
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
     setMessages(prev => [...prev, tempMessage]);
     setNewMessage('');
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
 
     try {
-<<<<<<< HEAD
       await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content }),
-=======
-      await fetch('/api/messages/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: tempMessage.content }),
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
       });
       fetchMessages();
     } catch (err) {
@@ -83,13 +55,7 @@ export default function MessagesView({ session }) {
     }
   };
 
-<<<<<<< HEAD
   const getInitials = (name) => name ? name.charAt(0).toUpperCase() : '?';
-=======
-  const getInitials = (name) => {
-    return name ? name.charAt(0).toUpperCase() : '?';
-  };
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
 
   const getColorForName = (name) => {
     const colors = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
@@ -105,19 +71,13 @@ export default function MessagesView({ session }) {
     const now = new Date();
     const diffMs = now - date;
     const diffMins = Math.floor(diffMs / 60000);
-<<<<<<< HEAD
     if (diffMins < 1) return 'now';
     if (diffMins < 60) return `${diffMins}m`;
-=======
-    
-    if (diffMins < 60) return `${Math.max(1, diffMins)}m`;
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `${diffHours}h`;
     return `${Math.floor(diffHours / 24)}d`;
   };
 
-<<<<<<< HEAD
   const filteredMessages = messages.filter(msg => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
@@ -154,32 +114,11 @@ export default function MessagesView({ session }) {
           backgroundColor: 'var(--surface-color)',
           color: 'var(--text-primary)',
           marginBottom: '1.25rem',
-=======
-  return (
-    <div style={{ paddingBottom: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-primary)' }}>Inbox</h2>
-      </div>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Your notifications and alerts</p>
-
-      {/* Search Bar */}
-      <input 
-        type="text" 
-        placeholder="Search messages" 
-        style={{
-          width: '100%',
-          padding: '1rem',
-          borderRadius: '9999px',
-          border: '1px solid var(--border-color)',
-          backgroundColor: 'white',
-          marginBottom: '1.5rem',
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
           outline: 'none',
           fontSize: '0.95rem'
         }}
       />
 
-<<<<<<< HEAD
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingBottom: '5rem' }}>
         {isLoading ? (
           <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '3rem' }}>Loading messages...</div>
@@ -233,46 +172,6 @@ export default function MessagesView({ session }) {
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem', textAlign: isMe ? 'right' : 'left' }}>
                     {formatTime(msg.created_at)}
                   </div>
-=======
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingBottom: '6rem' }}>
-        {isLoading ? (
-          <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>Loading messages...</p>
-        ) : messages.length === 0 ? (
-          <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>No messages yet.</p>
-        ) : (
-          messages.map((msg, i) => {
-            const isMe = msg.sender.id === session.id;
-            return (
-              <div key={msg.id} className="card" style={{ padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <div style={{
-                  width: '45px',
-                  height: '45px',
-                  borderRadius: '50%',
-                  backgroundColor: getColorForName(msg.sender.name),
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  fontSize: '1.2rem',
-                  flexShrink: 0
-                }}>
-                  {getInitials(msg.sender.name)}
-                </div>
-                
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.25rem' }}>
-                    <h4 style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {isMe ? 'You' : msg.sender.name}
-                    </h4>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      {formatTime(msg.created_at)}
-                    </span>
-                  </div>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {msg.content}
-                  </p>
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
                 </div>
               </div>
             );
@@ -281,7 +180,6 @@ export default function MessagesView({ session }) {
         <div ref={messagesEndRef} />
       </div>
 
-<<<<<<< HEAD
       <form onSubmit={handleSendMessage} style={{
         position: 'fixed',
         bottom: '1.5rem',
@@ -289,25 +187,12 @@ export default function MessagesView({ session }) {
         right: '2.5rem',
         display: 'flex',
         gap: '0.75rem',
-=======
-      {/* Floating compose bar (simplified for mobile) */}
-      <form onSubmit={handleSendMessage} style={{
-        position: 'fixed',
-        bottom: '5rem', /* Above bottom nav */
-        left: '1rem',
-        right: '1rem',
-        display: 'flex',
-        gap: '0.5rem',
-        backgroundColor: 'var(--bg-color)',
-        padding: '0.5rem 0',
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
         zIndex: 40
       }}>
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-<<<<<<< HEAD
           placeholder="Type a message to the campus..."
           style={{
             flex: 1,
@@ -319,16 +204,6 @@ export default function MessagesView({ session }) {
             outline: 'none',
             fontSize: '0.95rem',
             boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-=======
-          placeholder="Type a message..."
-          style={{
-            flex: 1,
-            padding: '1rem',
-            borderRadius: '9999px',
-            border: '1px solid var(--border-color)',
-            outline: 'none',
-            fontSize: '0.95rem'
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
           }}
         />
         <button type="submit" style={{
@@ -336,7 +211,6 @@ export default function MessagesView({ session }) {
           color: 'white',
           border: 'none',
           borderRadius: '50%',
-<<<<<<< HEAD
           width: '52px',
           height: '52px',
           display: 'flex',
@@ -351,16 +225,6 @@ export default function MessagesView({ session }) {
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
           </svg>
-=======
-          width: '50px',
-          height: '50px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer'
-        }}>
-          ➤
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
         </button>
       </form>
     </div>

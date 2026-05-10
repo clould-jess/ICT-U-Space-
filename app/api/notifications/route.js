@@ -14,16 +14,7 @@ export async function GET() {
         where: { id: session.id },
         include: { enrolledIn: { select: { id: true } } }
       });
-<<<<<<< HEAD
       if (!student) return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 });
-=======
-
-      if (!student) {
-        return new Response(JSON.stringify({ error: 'User not found. Please log in again.' }), { status: 404 });
-      }
-
-      const courseIds = student.enrolledIn.map(c => c.id);
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
 
       const courseIds = student.enrolledIn.map(c => c.id);
       notifications = await prisma.notification.findMany({

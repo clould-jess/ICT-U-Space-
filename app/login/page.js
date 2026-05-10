@@ -100,7 +100,12 @@ export default function Login() {
             </button>
           </form>
 
-          <div style={{ marginTop: '3rem', fontSize: '0.875rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
+          <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+            New to ICT-U Space?{' '}
+            <Link href="/signup" style={{ color: 'var(--primary-blue)', fontWeight: '600', textDecoration: 'none' }}>Create an account</Link>
+          </p>
+
+          <div style={{ marginTop: '1.5rem', fontSize: '0.875rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
             <p style={{ marginBottom: '1rem', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Quick Sign In Demo</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
               <span className="badge" style={{ cursor: 'pointer', backgroundColor: 'var(--bg-color)', color: 'var(--primary-blue)', border: '1px solid var(--primary-blue)', padding: '0.5rem 1rem' }} onClick={() => setEmail('admin@school.edu')}>Admin</span>

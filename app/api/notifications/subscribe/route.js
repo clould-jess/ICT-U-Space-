@@ -10,13 +10,7 @@ export async function POST(request) {
     const subscription = await request.json();
 
     const user = await prisma.user.findUnique({ where: { id: session.id } });
-<<<<<<< HEAD
     if (!user) return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 });
-=======
-    if (!user) {
-      return new Response(JSON.stringify({ error: 'User not found. Please log in again.' }), { status: 404 });
-    }
->>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
 
     await prisma.user.update({
       where: { id: session.id },
