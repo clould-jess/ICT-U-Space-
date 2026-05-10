@@ -9,19 +9,19 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --navy:   #0b1e3d;
-    --navy2:  #122952;
-    --navy3:  #1a3a6e;
-    --blue:   #1e6fcf;
-    --blue2:  #2f85e8;
-    --accent: #00c6a7;
-    --accent2:#00e8c3;
-    --slate:  #e8edf7;
+    --navy:   #1a0a0a;
+    --navy2:  #2a1010;
+    --navy3:  #3d1818;
+    --blue:   #8b1a1a;
+    --blue2:  #b22222;
+    --accent: #d4a017;
+    --accent2:#f0bc1e;
+    --slate:  #f5eee6;
     --white:  #ffffff;
-    --gray:   #8a99b5;
-    --text:   #d6dff0;
-    --card-bg:#13284a;
-    --card-border: rgba(30,111,207,0.22);
+    --gray:   #a08878;
+    --text:   #e8d5c8;
+    --card-bg:#2a1010;
+    --card-border: rgba(139,26,26,0.35);
     --radius: 14px;
     --radius-lg: 22px;
   }
@@ -42,9 +42,9 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 5vw;
     height: 68px;
-    background: rgba(11,30,61,0.88);
+    background: rgba(26,10,10,0.92);
     backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(30,111,207,0.15);
+    border-bottom: 1px solid rgba(139,26,26,0.25);
   }
 
   .nav-logo {
@@ -93,23 +93,23 @@
   .hero-bg {
     position: absolute; inset: 0; z-index: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(30,111,207,0.22) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(0,198,167,0.12) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,26,26,0.30) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(212,160,23,0.12) 0%, transparent 60%);
   }
 
   /* Z-pattern grid lines */
   .hero-grid {
     position: absolute; inset: 0; z-index: 0;
     background-image:
-      linear-gradient(rgba(30,111,207,0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(30,111,207,0.07) 1px, transparent 1px);
+      linear-gradient(rgba(139,26,26,0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,26,26,0.10) 1px, transparent 1px);
     background-size: 48px 48px;
   }
 
   .hero-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(0,198,167,0.12);
-    border: 1px solid rgba(0,198,167,0.3);
+    background: rgba(212,160,23,0.12);
+    border: 1px solid rgba(212,160,23,0.35);
     color: var(--accent); font-size: 0.8rem; font-weight: 500;
     padding: 6px 16px; border-radius: 50px;
     margin-bottom: 1.5rem;
@@ -161,9 +161,9 @@
     padding: 14px 30px; border-radius: var(--radius);
     font-weight: 700; font-size: 1rem;
     text-decoration: none; transition: all 0.2s;
-    box-shadow: 0 4px 24px rgba(0,198,167,0.28);
+    box-shadow: 0 4px 24px rgba(212,160,23,0.28);
   }
-  .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,198,167,0.38); }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(212,160,23,0.38); }
 
   .btn-secondary {
     display: inline-flex; align-items: center; gap: 9px;
@@ -229,7 +229,7 @@
   }
   .feature-list li .icon {
     width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
-    background: rgba(0,198,167,0.15);
+    background: rgba(212,160,23,0.15);
     display: flex; align-items: center; justify-content: center;
     margin-top: 2px;
   }
@@ -247,7 +247,7 @@
   .z-visual::before {
     content:''; position:absolute; top:-40px;right:-40px;
     width:120px;height:120px;border-radius:50%;
-    background:radial-gradient(circle,rgba(0,198,167,0.12),transparent 70%);
+    background:radial-gradient(circle,rgba(212,160,23,0.10),transparent 70%);
   }
 
   /* hall grid inside visual */
@@ -264,7 +264,7 @@
     font-size: 0.68rem; padding: 3px 8px; border-radius: 20px;
     display:inline-block; margin-top:5px; font-weight:500;
   }
-  .status.available { background:rgba(0,198,167,0.15);color:var(--accent); }
+  .status.available { background:rgba(212,160,23,0.18);color:var(--accent); }
   .status.busy { background:rgba(207,72,46,0.15);color:#e07060; }
   .status.partial { background:rgba(255,180,60,0.15);color:#f5b84b; }
 
@@ -312,9 +312,9 @@
     display:flex;align-items:center;justify-content:center;
     font-size:20px;
   }
-  .about-icon.blue{background:rgba(30,111,207,0.18);}
-  .about-icon.green{background:rgba(0,198,167,0.15);}
-  .about-icon.amber{background:rgba(245,184,75,0.15);}
+  .about-icon.blue{background:rgba(139,26,26,0.22);}
+  .about-icon.green{background:rgba(212,160,23,0.18);}
+  .about-icon.amber{background:rgba(178,34,34,0.15);}
   .about-card h4{font-family:'Syne',sans-serif;font-size:1rem;font-weight:600;margin-bottom:4px;}
   .about-card p{font-size:0.88rem;color:var(--text);line-height:1.6;}
 
@@ -330,9 +330,9 @@
     display:flex;align-items:center;justify-content:center;
     font-size:12px;font-weight:700;
   }
-  .av1{background:rgba(30,111,207,0.3);color:#7bb8f8;}
-  .av2{background:rgba(0,198,167,0.2);color:var(--accent);}
-  .av3{background:rgba(200,100,200,0.2);color:#d07cd0;}
+  .av1{background:rgba(139,26,26,0.35);color:#e07878;}
+  .av2{background:rgba(212,160,23,0.25);color:var(--accent);}
+  .av3{background:rgba(178,34,34,0.25);color:#e09060;}
   .team-chip span{font-size:0.82rem;font-weight:500;}
 
   /* ── DOWNLOAD ── */
@@ -344,7 +344,7 @@
   #download::before{
     content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);
     width:600px;height:300px;border-radius:50%;
-    background:radial-gradient(circle,rgba(0,198,167,0.12),transparent 70%);
+    background:radial-gradient(circle,rgba(212,160,23,0.12),transparent 70%);
   }
   .dl-inner{position:relative;z-index:1;max-width:680px;margin:0 auto;}
   .dl-icon{
@@ -367,9 +367,9 @@
     font-family:'Syne',sans-serif;
     font-weight:700;font-size:1.05rem;
     text-decoration:none;transition:all 0.2s;
-    box-shadow:0 6px 30px rgba(0,198,167,0.32);
+    box-shadow:0 6px 30px rgba(212,160,23,0.32);
   }
-  .btn-download:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 10px 40px rgba(0,198,167,0.42);}
+  .btn-download:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 10px 40px rgba(212,160,23,0.42);}
   .btn-download svg{width:20px;height:20px;stroke:var(--navy);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
 
   .btn-docs{
@@ -379,12 +379,12 @@
     font-weight:500;font-size:1rem;
     text-decoration:none;transition:all 0.2s;
   }
-  .btn-docs:hover{border-color:var(--blue2);color:var(--blue2);transform:translateY(-2px);}
+  .btn-docs:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
 
   /* ── FOOTER ── */
   footer{
     background:var(--navy);
-    border-top:1px solid rgba(30,111,207,0.15);
+    border-top:1px solid rgba(139,26,26,0.20);
     padding:2.5rem 5vw;
     display:flex;justify-content:space-between;align-items:center;
     flex-wrap:wrap;gap:1rem;
@@ -690,7 +690,7 @@
         <div class="about-icon green">🌍</div>
         <div>
           <h4>Accessible for All</h4>
-          <p>We believe every school deserves great tools, regardless of budget. HallSync is free and self-hostable on your own server.</p>
+          <p>We believe every school deserves great tools, regardless of budget. USpace is free and self-hostable on your own server.</p>
         </div>
       </div>
       <div class="about-card">
@@ -743,7 +743,7 @@
 
 <!-- ══ FOOTER ══ -->
 <footer>
-  <div class="footer-logo">Hall<span>Sync.</span></div>
+  <div class="footer-logo">U<span>Space.</span></div>
   <p>© 2026 USpace. Made with care for schools.</p>
   <div class="footer-links">
     <a href="#home">Home</a>
