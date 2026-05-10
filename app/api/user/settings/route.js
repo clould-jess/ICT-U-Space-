@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../../lib/prisma';
 import { cookies } from 'next/headers';
-
-const prisma = new PrismaClient();
 
 export async function POST(request) {
   try {
@@ -16,11 +14,7 @@ export async function POST(request) {
     if (semester !== undefined) dataToUpdate.semester = semester;
 
     if (courseIds && Array.isArray(courseIds)) {
-      // Disconnect all existing enrollments first, then connect new ones
-      dataToUpdate.enrolledIn = {
-        set: [],
-        connect: courseIds.map(id => ({ id }))
-      };
+      dataToUpdate.enrolledIn = { set: [], connect: courseIds.map(id => ({ id })) };
     }
 
     const updatedUser = await prisma.user.update({
@@ -46,11 +40,8 @@ export async function GET() {
       where: { id: session.id },
       include: { enrolledIn: { select: { id: true } } }
     });
-    
-    // Fetch all available courses so the frontend can display them for enrollment
-    const allCourses = await prisma.course.findMany({
-      include: { lecturer: true }
-    });
+
+    const allCourses = await prisma.course.findMany({ include: { lecturer: true } });
 
     return new Response(JSON.stringify({ user, allCourses }), { status: 200 });
   } catch (error) {

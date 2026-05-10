@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../lib/prisma';
 import { cookies } from 'next/headers';
-
-const prisma = new PrismaClient();
 
 export async function GET() {
   try {
@@ -16,8 +14,9 @@ export async function GET() {
         where: { id: session.id },
         include: { enrolledIn: { select: { id: true } } }
       });
-      const courseIds = student.enrolledIn.map(c => c.id);
+      if (!student) return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 });
 
+      const courseIds = student.enrolledIn.map(c => c.id);
       notifications = await prisma.notification.findMany({
         where: { course_id: { in: courseIds } },
         orderBy: { created_at: 'desc' },
@@ -29,7 +28,6 @@ export async function GET() {
         select: { id: true }
       });
       const courseIds = courses.map(c => c.id);
-
       notifications = await prisma.notification.findMany({
         where: { course_id: { in: courseIds } },
         orderBy: { created_at: 'desc' },

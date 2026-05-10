@@ -1,36 +1,26 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../../lib/prisma';
 import { cookies } from 'next/headers';
-
-const prisma = new PrismaClient();
 
 export async function POST(request) {
   try {
     const { email, password } = await request.json();
-    
+
     if (!email || !password) {
       return new Response(JSON.stringify({ error: 'Missing credentials' }), { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user || user.password !== password) {
       return new Response(JSON.stringify({ error: 'Invalid email or password' }), { status: 401 });
     }
 
-    // Set simple session cookie for prototype
-    const sessionData = {
-      id: user.id,
-      name: user.name,
-      role: user.role,
-      email: user.email
-    };
-    
+    const sessionData = { id: user.id, name: user.name, role: user.role, email: user.email };
+
     (await cookies()).set('session', JSON.stringify(sessionData), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60 * 24 * 7,
       path: '/',
     });
 

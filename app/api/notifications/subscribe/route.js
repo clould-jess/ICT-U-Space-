@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../../lib/prisma';
 import { cookies } from 'next/headers';
-
-const prisma = new PrismaClient();
 
 export async function POST(request) {
   try {
@@ -10,6 +8,9 @@ export async function POST(request) {
     const session = JSON.parse(sessionCookie.value);
 
     const subscription = await request.json();
+
+    const user = await prisma.user.findUnique({ where: { id: session.id } });
+    if (!user) return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 });
 
     await prisma.user.update({
       where: { id: session.id },
