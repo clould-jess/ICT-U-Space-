@@ -38,24 +38,14 @@ export default function Login() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', backgroundColor: 'transparent' }}>
-      {/* Left side: branding */}
-      <div style={{ flex: 1, background: 'color-mix(in srgb, var(--primary-blue) 40%, transparent)', backdropFilter: 'blur(16px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white', padding: '3rem', borderRight: '1px solid color-mix(in srgb, var(--border-color) 30%, transparent)' }}>
-        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '2.5rem', marginBottom: '2rem', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
-          S
-        </div>
-        <h1 style={{ fontSize: '3.5rem', fontWeight: '800', marginBottom: '1.5rem', textAlign: 'center', letterSpacing: '-0.025em' }}>ICT-U Space</h1>
+    <div style={{ minHeight: '100vh', display: 'flex', backgroundColor: 'var(--bg-color)' }}>
+      {/* Left side: branding/image */}
+      <div style={{ flex: 1, background: 'linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-hover) 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white', padding: '3rem' }}>
+        <div style={{ width: '80px', height: '80px', borderRadius: '20px', background: 'var(--accent-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '2.5rem', marginBottom: '2rem', boxShadow: '0 10px 25px rgba(251, 146, 60, 0.4)' }}>C</div>
+        <h1 style={{ fontSize: '3.5rem', fontWeight: '800', marginBottom: '1.5rem', textAlign: 'center', letterSpacing: '-0.025em' }}>Campus Space</h1>
         <p style={{ fontSize: '1.25rem', textAlign: 'center', maxWidth: '400px', opacity: 0.9, lineHeight: 1.6 }}>
-          Intelligent classroom reservations and real-time schedule management.
+          Intelligent classroom reservations and real-time schedule management for your institution.
         </p>
-        <div style={{ marginTop: '3rem', display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', maxWidth: '320px' }}>
-          {['Book rooms instantly', 'Real-time availability', 'Smart notifications', 'Multi-role access'].map(f => (
-            <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: 0.9 }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-orange)', flexShrink: 0 }} />
-              <span style={{ fontSize: '1rem' }}>{f}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Right side: Login form */}
@@ -80,7 +70,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="you@ictuniversity.edu.cm"
+                placeholder="admin@school.edu"
               />
             </div>
 
@@ -99,23 +89,26 @@ export default function Login() {
                 placeholder="••••••••"
               />
             </div>
-
+            
             <button
               type="submit"
               disabled={isLoading}
-              className="btn-primary"
-              style={{ padding: '1rem', fontSize: '1.125rem', marginTop: '0.5rem' }}
+              className="btn-accent"
+              style={{ marginTop: '1rem', width: '100%', padding: '1rem', fontSize: '1.125rem', boxShadow: '0 4px 14px 0 rgba(251, 146, 60, 0.39)' }}
             >
-              {isLoading ? 'Signing in...' : 'Log In'}
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
-
-            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              No account yet?{' '}
-              <Link href="/signup" style={{ color: 'var(--primary-blue)', fontWeight: '600', textDecoration: 'none' }}>
-                Create one
-              </Link>
-            </p>
           </form>
+
+          <div style={{ marginTop: '3rem', fontSize: '0.875rem', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
+            <p style={{ marginBottom: '1rem', fontWeight: '600', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Quick Sign In Demo</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
+              <span className="badge" style={{ cursor: 'pointer', backgroundColor: 'var(--bg-color)', color: 'var(--primary-blue)', border: '1px solid var(--primary-blue)', padding: '0.5rem 1rem' }} onClick={() => setEmail('admin@school.edu')}>Admin</span>
+              <span className="badge" style={{ cursor: 'pointer', backgroundColor: 'var(--bg-color)', color: 'var(--primary-blue)', border: '1px solid var(--primary-blue)', padding: '0.5rem 1rem' }} onClick={() => setEmail('smith@school.edu')}>Lecturer</span>
+              <span className="badge" style={{ cursor: 'pointer', backgroundColor: 'var(--bg-color)', color: 'var(--primary-blue)', border: '1px solid var(--primary-blue)', padding: '0.5rem 1rem' }} onClick={() => setEmail('peter@student.school.edu')}>Prefect</span>
+              <span className="badge" style={{ cursor: 'pointer', backgroundColor: 'var(--bg-color)', color: 'var(--primary-blue)', border: '1px solid var(--primary-blue)', padding: '0.5rem 1rem' }} onClick={() => setEmail('sam@student.school.edu')}>Student</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

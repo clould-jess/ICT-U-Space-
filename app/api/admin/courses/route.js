@@ -36,8 +36,18 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   try {
+<<<<<<< HEAD
     const admin = await requireAdmin();
     if (!admin) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
+=======
+    const sessionCookie = (await cookies()).get('session');
+    if (!sessionCookie) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    const session = JSON.parse(sessionCookie.value);
+
+    if (session.role !== 'ADMIN') {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
+    }
+>>>>>>> 1229ad69d61cc025bf7943a328efa21b2faae813
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
