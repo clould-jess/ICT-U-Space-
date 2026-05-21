@@ -1,0 +1,597 @@
+[
+  {
+    "day": "Monday",
+    "time": "8:00 - 11:00",
+    "course": "JMC 3271 Digital Marketing",
+    "lecturer": "Mr. Ekane Lesley",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "8:00 - 11:00",
+    "course": "ICT 2230 Intro to IOT & Embedded Systems Grp 2",
+    "lecturer": "Dr. Keyampi",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "8:00 - 11:00",
+    "course": "ICT 1210 OOP with C++ Grp 1",
+    "lecturer": "Dr. Nkandeu",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "8:00 - 11:00",
+    "course": "CSC 3221 Intro to Data Science Grp 2",
+    "lecturer": "Dr. Fotsing",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "8:00 - 11:00",
+    "course": "BMS 3235 Project Management",
+    "lecturer": "Dr. Agbor Nchacha",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "8:00 - 11:00",
+    "course": "ICT 2235 Database Management Systems Grp 1",
+    "lecturer": "Engr. Tanwi",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "11:00 - 14:00",
+    "course": "CSC 1121 Research Methodology for CS Engineers Grp 1",
+    "lecturer": "Dr. Fotsing",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "11:00 - 14:00",
+    "course": "ISN 3232 CCNA 2",
+    "lecturer": "Engr. Andrew",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "11:00 - 14:00",
+    "course": "ICT 2223 Java Programming II Grp 2",
+    "lecturer": "Engr. Mughe",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "11:00 - 14:00",
+    "course": "ACC 3210 Fundamental Principles of Taxation (ECOWAS/CEMAC)",
+    "lecturer": "Mgr. Ayuk Collins",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "11:00 - 14:00",
+    "course": "ICT 2230 Intro to IOT & Embedded Systems Grp 1",
+    "lecturer": "Dr. Keyampi",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "11:00 - 14:00",
+    "course": "REN 3262 Application of Renewable Energy Software",
+    "lecturer": "Engr. Djongagew",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "14:00 - 17:00",
+    "course": "ACC 1212 Accounting Information Systems",
+    "lecturer": "Mr. Njabe Charles",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "14:00 - 17:00",
+    "course": "ICT 2223 Java Programming II Grp 1",
+    "lecturer": "Engr. Mughe",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "14:00 - 17:00",
+    "course": "SEN 3243 Advanced Web Development Grp 2",
+    "lecturer": "Engr. Tanwi",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "14:00 - 17:00",
+    "course": "REN 3264 Power Plant Technology",
+    "lecturer": "Engr. Djongagew",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Monday",
+    "time": "14:00 - 17:00",
+    "course": "BMS 2200 Civics and Ethics (Grp 2 + BMS Students)",
+    "lecturer": "Dr. Ndah",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "8:00 - 11:00",
+    "course": "REN 3265 Embedded Systems",
+    "lecturer": "Dr. Nkandeu",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "8:00 - 11:00",
+    "course": "MTH 1201 Real Analysis II Grp 1",
+    "lecturer": "Engr. Nebasi",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "8:00 - 11:00",
+    "course": "ACC 3217 Financial Accounting",
+    "lecturer": "Mme Atemlefeh Vanessa",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "8:00 - 11:00",
+    "course": "MTH 2222 Computational Mathematics Grp 2",
+    "lecturer": "Engr. Andrew",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "8:00 - 11:00",
+    "course": "SEN 3242 Android App Development Grp 1",
+    "lecturer": "Engr. Moune",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "8:00 - 11:00",
+    "course": "JMC 2272 Newspaper Editing and Printing",
+    "lecturer": "Mme Agnang",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "11:00 - 14:00",
+    "course": "ACC 4214 Forensic Accounting",
+    "lecturer": "Mme Atemlefeh Vanessa",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "11:00 - 14:00",
+    "course": "MTH 2222 Computational Mathematics Grp 1",
+    "lecturer": "Engr. Andrew",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "11:00 - 14:00",
+    "course": "BNF 4227 Public Finance",
+    "lecturer": "Mr. Aben Jacob",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "11:00 - 14:00",
+    "course": "SEN 3242 Android App Development Grp 2",
+    "lecturer": "Engr. Moune",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "11:00 - 14:00",
+    "course": "JMC 3275 Film & Documentary Making",
+    "lecturer": "Mme Agnang",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "11:00 - 14:00",
+    "course": "ICT 1210 OOP with C++ Grp 2",
+    "lecturer": "Dr. Nkandeu",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "14:00 - 17:00",
+    "course": "ACC 4211 Government Accounting",
+    "lecturer": "Mgr. Ayuk Collins",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "14:00 - 17:00",
+    "course": "ICT 1222 Algorithms & Data Structures II Grp 1",
+    "lecturer": "Engr. Andrew",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "14:00 - 17:00",
+    "course": "BNF 3225 International Finance",
+    "lecturer": "Mr. Aben Jacob",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "14:00 - 17:00",
+    "course": "BMS 2237 Seminar in Sustainable Development II",
+    "lecturer": "Mr. Epie Ananfah",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Tuesday",
+    "time": "14:00 - 17:00",
+    "course": "MTH 1201 Real Analysis II Grp 2",
+    "lecturer": "Engr. Nebasi",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "8:00 - 11:00",
+    "course": "JMC 2276 Music Production",
+    "lecturer": "Mme Tita",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "8:00 - 11:00",
+    "course": "ECN 1242 Principles of Macroeconomics",
+    "lecturer": "Mr. Ekane Lesley",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "8:00 - 11:00",
+    "course": "ICT 2235 Database Management Systems Grp 2",
+    "lecturer": "Engr. Tanwi",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "8:00 - 11:00",
+    "course": "SEN 3244 Software Architecture",
+    "lecturer": "Engr. Palma",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "8:00 - 11:00",
+    "course": "BMS 2200 Civics and Ethics Grp 1",
+    "lecturer": "Dr. Ndah Grimbald",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "8:00 - 11:00",
+    "course": "BMS 4238 Project Management",
+    "lecturer": "Dr. Fosso",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "11:00 - 14:00",
+    "course": "ICT 1220 Intro to Networking Grp 2",
+    "lecturer": "Engr. Andrew",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "11:00 - 14:00",
+    "course": "SEN 3241 Software Validation and Verification",
+    "lecturer": "Engr. Palma",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "11:00 - 14:00",
+    "course": "BMS 1232 Knowledge Leadership & African Dev. (Grp 1 + BMS)",
+    "lecturer": "Dr. Ndah Grimbald",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "11:00 - 14:00",
+    "course": "SEN 2243 Intro to Game Development",
+    "lecturer": "Engr. Moune",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "11:00 - 14:00",
+    "course": "BNF 4228 Investment Analysis",
+    "lecturer": "Mr. Ekane Lesley",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "11:00 - 14:00",
+    "course": "JMC 3274 Entrepreneurship in Media",
+    "lecturer": "Dr. Yong",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "14:00 - 17:00",
+    "course": "BMS 1232 Knowledge Leadership & African Dev. Grp 2",
+    "lecturer": "Dr. Ndah Grimbald",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "14:00 - 17:00",
+    "course": "ICT 2220 OO Analysis, Design & Implementation Grp 2",
+    "lecturer": "Engr. Palma",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "14:00 - 17:00",
+    "course": "CSC 3221 Intro to Data Science Grp 1",
+    "lecturer": "Dr. Fotsing",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "14:00 - 17:00",
+    "course": "BNF 2222 Risk Management",
+    "lecturer": "Mr. Njabe Charles",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Wednesday",
+    "time": "14:00 - 17:00",
+    "course": "JMC 3276 Sociology & Psychology in Media",
+    "lecturer": "Dr. Yong",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "8:00 - 11:00",
+    "course": "ICT 2231 Operating Systems Grp 1",
+    "lecturer": "Engr. Tanwi",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "8:00 - 11:00",
+    "course": "JMC 2271 Mobile App Dev. for Journalists",
+    "lecturer": "Dr. Nkandeu",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "8:00 - 11:00",
+    "course": "ACC 1213 Principles of Accounting 2",
+    "lecturer": "Mgr. Ayuk Collins",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "8:00 - 11:00",
+    "course": "ECN 2243 Statistics for Business & Economics",
+    "lecturer": "Mr. Ekane Lesley",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "8:00 - 11:00",
+    "course": "ICT 3212 Advanced Database Systems",
+    "lecturer": "Engr. Moune",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "8:00 - 11:00",
+    "course": "ISN 3231 Network Management",
+    "lecturer": "Engr. Nebasi",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "8:00 - 11:00",
+    "course": "JMC 3273 Research Methods in Media",
+    "lecturer": "Mme Tita",
+    "hall": "Radio & TV Unit"
+  },
+  {
+    "day": "Thursday",
+    "time": "11:00 - 14:00",
+    "course": "CSC 1121 Research Methodology for CS Engineers Grp 2",
+    "lecturer": "Dr. Fotsing",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "11:00 - 14:00",
+    "course": "CYS 3251 Network/Computer Forensics",
+    "lecturer": "Engr. Nebasi",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "11:00 - 14:00",
+    "course": "BNF 3226 Financial Institutions and Instruments",
+    "lecturer": "Mr. Ekane Lesley",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "11:00 - 14:00",
+    "course": "ICT 2231 Operating Systems Grp 2",
+    "lecturer": "Engr. Tanwi",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "11:00 - 14:00",
+    "course": "JMC 3272 Cyber Journalism",
+    "lecturer": "Mme Tita",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "14:00 - 17:00",
+    "course": "JMC 2273 Radio and TV Programme Writing",
+    "lecturer": "Mme Tita",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "14:00 - 17:00",
+    "course": "EGL 1262 Communication Skills",
+    "lecturer": "Mme Bambot Delphine",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "14:00 - 17:00",
+    "course": "BNF 4229 Financial Management",
+    "lecturer": "Ms. Tarbot Chelsea",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "14:00 - 17:00",
+    "course": "ACC 3219 Advanced Accounting Info System/Accounting Lab",
+    "lecturer": "Mgr. Ayuk Collins",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "14:00 - 17:00",
+    "course": "ISN 2231 Computer Networking and Security",
+    "lecturer": "Engr. Nebasi",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Thursday",
+    "time": "14:00 - 17:00",
+    "course": "SEN 3243 Advanced Web Development Grp 1",
+    "lecturer": "Engr. Tanwi",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "SPT 1200 Sports and Physical Education",
+    "lecturer": "Mr. Mounbeket Olembe",
+    "hall": "Sports Complex"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "ACC 4212 Advanced Financial Accounting",
+    "lecturer": "Mme Atemlefeh Vanessa",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "MTH 1245 Discrete Mathematics Grp 2",
+    "lecturer": "Dr. Keyampi",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "REN 3261 Hydrogen and Fuel Cells",
+    "lecturer": "Engr. Ridley",
+    "hall": "BS Chumbow Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "JMC 2275 Digital Radio Production II",
+    "lecturer": "Mr. Betangacho",
+    "hall": "Radio & TV Unit"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "ICT 1220 Intro to Networking Grp 1",
+    "lecturer": "Engr. Mughe",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "BMS 3233 Business Law",
+    "lecturer": "Mr. Njabe Charles",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "7:00 - 9:00",
+    "course": "ICT 3211 IT Infrastructure Management",
+    "lecturer": "Dr. Fosso",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "11:00 - 14:00",
+    "course": "ACC 3218 Fraud and Ethics",
+    "lecturer": "Ms. Tarbot Chelsea",
+    "hall": "IT Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "11:00 - 14:00",
+    "course": "MTH 1245 Discrete Mathematics Grp 1",
+    "lecturer": "Dr. Keyampi",
+    "hall": "J-E. Pondi Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "11:00 - 14:00",
+    "course": "ICT 1222 Algorithms & Data Structures II Grp 2",
+    "lecturer": "Engr. Mughe",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "11:00 - 14:00",
+    "course": "REN 3263 Sustainable Energy Management & Climate Change",
+    "lecturer": "Engr. Ridley",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "11:00 - 14:00",
+    "course": "JMC 2274 Digital TV Production II",
+    "lecturer": "Mr. Betangacho",
+    "hall": "Eric Mbarika Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "14:00 - 17:00",
+    "course": "ACC 4213 OHADA Accounting II",
+    "lecturer": "Mgr. Ayuk Collins",
+    "hall": "Terry & Linda Byrd Hall"
+  },
+  {
+    "day": "Friday",
+    "time": "14:00 - 17:00",
+    "course": "ICT 2220 OO Analysis, Design & Implementation Grp 1",
+    "lecturer": "Engr. Palma",
+    "hall": "George Mbarika Hall"
+  },
+  {
+    "day": "Saturday",
+    "time": "8:00 - 11:00",
+    "course": "BMS 2238 Introduction to E-Commerce",
+    "lecturer": "Engr. Palma",
+    "hall": "George Mbarika Hall"
+  }
+]
