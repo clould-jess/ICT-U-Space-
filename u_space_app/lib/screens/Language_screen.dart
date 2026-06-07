@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'Courses_screen.dart';
+import 'courses_screen.dart';
 
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});

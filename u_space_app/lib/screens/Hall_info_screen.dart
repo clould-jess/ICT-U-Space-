@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'Unbook_screen.dart';
+import 'unbook_screen.dart';
 import '../widgets/u_space_nav_bar.dart';
+import '../models/hall.dart';
 
 class HallInfoScreen extends StatelessWidget {
-  const HallInfoScreen({super.key});
+  final Hall hall;
+  final String? courseName;
+  final String? lecturerName;
+  final String? delegateName;
+
+  const HallInfoScreen({
+    super.key,
+    required this.hall,
+    this.courseName,
+    this.lecturerName,
+    this.delegateName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +74,17 @@ class HallInfoScreen extends StatelessWidget {
               const SizedBox(height: 30),
 
               // ── Info fields ───────────────────────────────────────────────
-              buildInfoRow('Name:', 'George Mbarika hall'),
-              buildInfoRow('ongoing course:', 'OOADI'),
-              buildInfoRow('course lecturer:', 'Engineer Tekoh Palmer'),
-              buildInfoRow('course deleguate:', 'Fotsi Fotsi Eric'),
+              buildInfoRow('Name:', hall.name),
+              if (courseName != null && courseName!.isNotEmpty)
+                buildInfoRow('ongoing course:', courseName!),
+              if (lecturerName != null && lecturerName!.isNotEmpty)
+                buildInfoRow('course lecturer:', lecturerName!),
+              if (delegateName != null && delegateName!.isNotEmpty)
+                buildInfoRow('course delegate:', delegateName!),
+              if (hall.buildingBlock.isNotEmpty)
+                buildInfoRow('building block:', hall.buildingBlock),
+              if (hall.capacity > 0)
+                buildInfoRow('capacity:', '${hall.capacity} seats'),
 
               const SizedBox(height: 20),
 
@@ -127,9 +146,7 @@ class HallInfoScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'back_btn_hall_info',
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: () => Navigator.pop(context),
         backgroundColor: Colors.transparent,
         elevation: 0,
         child: const Icon(

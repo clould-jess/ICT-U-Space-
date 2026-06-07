@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '2success_screen.dart';
+import 'success_screen_2.dart';
 import '../widgets/u_space_nav_bar.dart';
 
 class IdentifierScreen extends StatefulWidget {

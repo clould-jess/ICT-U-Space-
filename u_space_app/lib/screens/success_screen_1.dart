@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/gestures.dart';
-import 'Booking_screen.dart';
 import '../widgets/u_space_nav_bar.dart';
 
 class SuccessScreen extends StatelessWidget {
@@ -110,12 +109,7 @@ class SuccessScreen extends StatelessWidget {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const BookingScreen(),
-                                  ),
-                                );
+                                Navigator.of(context).popUntil((route) => route.isFirst);
                               },
                           ),
                           TextSpan(

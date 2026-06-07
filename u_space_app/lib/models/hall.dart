@@ -15,11 +15,11 @@ class Hall {
 
   factory Hall.fromJson(Map<String, dynamic> json) {
     return Hall(
-      id: json['id'],
-      name: json['name'],
-      capacity: json['capacity'],
-      features: json['features'],
-      buildingBlock: json['building_block'],
+      id: json['id'] as String,
+      name: json['name'] as String,
+      capacity: (json['capacity'] as num).toInt(),
+      features: (json['features'] as String?) ?? '',
+      buildingBlock: (json['building_block'] as String?) ?? '',
     );
   }
 

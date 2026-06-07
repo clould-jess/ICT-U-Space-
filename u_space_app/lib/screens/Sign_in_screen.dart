@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'Login_screen.dart';
-import 'Tell_me_more_screen.dart';
-
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'login_screen.dart';
+import 'home_page.dart';
+import 'lecturer_home_page.dart';
 import '../providers/auth_provider.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -19,35 +18,30 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final TextEditingController _matriculeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   bool _showErrors = false;
+  String _detectedRole = ''; // '' | 'STUDENT' | 'LECTURER' | 'INVALID'
 
-  Future<void> _handleSignIn() async {
-    setState(() {
-      _showErrors = true;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _matriculeController.addListener(_onMatriculeChanged);
+  }
 
-    if (_nameController.text.isEmpty || 
-        _emailController.text.isEmpty || 
-        _passwordController.text.isEmpty) {
-      return;
+  void _onMatriculeChanged() {
+    final raw = _matriculeController.text.trim().toUpperCase();
+    String role;
+    if (raw.isEmpty) {
+      role = '';
+    } else if (raw.startsWith('ICTULEC')) {
+      role = 'LECTURER';
+    } else if (raw.startsWith('ICTU')) {
+      role = 'STUDENT';
+    } else {
+      role = 'INVALID';
     }
-
-    try {
-      await ref.read(authStateProvider.notifier).signup(
-        _nameController.text.trim(),
-        _emailController.text.trim(),
-        _passwordController.text,
-        'STUDENT', // Defaulting to STUDENT for now
-      );
-      
-      if (!mounted) return;
-      // Navigate to Home Page on success
-      Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sign up failed: $e')),
-      );
+    if (role != _detectedRole) {
+      setState(() => _detectedRole = role);
     }
   }
 
@@ -60,85 +54,249 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final titleBlackStyleLarge = GoogleFonts.lemon(
-      fontSize: 55,
-      fontWeight: FontWeight.w900,
-      fontStyle: FontStyle.italic,
-      color: Colors.black,
-      height: 1.1,
-    );
+  Future<void> _handleSignIn() async {
+    setState(() => _showErrors = true);
 
-    final titleBlackStyleSmall = GoogleFonts.lemon(
-      fontSize: 45,
-      fontWeight: FontWeight.w900,
-      fontStyle: FontStyle.italic,
-      color: Colors.black,
-      height: 1.1,
-    );
+    if (_nameController.text.trim().isEmpty ||
+        _emailController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty ||
+        _matriculeController.text.trim().isEmpty) {
+      return;
+    }
 
-    final titleOrangeStyleLarge = GoogleFonts.lemon(
-      fontSize: 55,
-      fontWeight: FontWeight.w900,
-      fontStyle: FontStyle.italic,
-      color: const Color(0xFFFF5100),
-      height: 1.1,
-    );
+    if (_detectedRole == 'INVALID' || _detectedRole.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid matricule. Must start with ICTU (student) or ICTULEC (lecturer).'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-    final hintStyle = GoogleFonts.lemon(
-      fontSize: 22,
-      fontWeight: FontWeight.w900,
-      fontStyle: FontStyle.italic,
-      color: Colors.grey.shade600,
-    );
+    if (!_emailController.text.toLowerCase().endsWith('@ictuniversity.edu.cm')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Registration is restricted to @ictuniversity.edu.cm emails only.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-    Widget buildTextField(String hint, TextEditingController controller, {bool isPassword = false}) {
-      bool isError = _showErrors && controller.text.isEmpty;
+    try {
+      await ref.read(authStateProvider.notifier).signup(
+        _nameController.text.trim(),
+        _emailController.text.trim().toLowerCase(),
+        _passwordController.text,
+        _matriculeController.text.trim(),
+      );
 
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (isError)
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, bottom: 5.0),
-                child: Text(
-                  'fill all the fields please',
-                  style: GoogleFonts.lemon(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFE0E0E0),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: TextField(
-                controller: controller,
-                obscureText: isPassword,
-                decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle: hintStyle,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                ),
-                style: GoogleFonts.lemon(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ],
+      if (!mounted) return;
+      final user = ref.read(authStateProvider).value;
+      _navigateByRole(user?.role ?? _detectedRole);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceFirst('Exception: ', '')),
+          backgroundColor: Colors.red,
         ),
       );
     }
+  }
+
+  void _navigateByRole(String role) {
+    if (role == 'LECTURER') {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LecturerHomePage()),
+        (_) => false,
+      );
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+        (_) => false,
+      );
+    }
+  }
+
+  Widget _buildTextField(
+    String hint,
+    TextEditingController controller, {
+    bool isPassword = false,
+    TextInputType keyboardType = TextInputType.text,
+    TextCapitalization capitalization = TextCapitalization.none,
+  }) {
+    final hasError = _showErrors && controller.text.isEmpty;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (hasError)
+            Padding(
+              padding: const EdgeInsets.only(left: 10, bottom: 5),
+              child: Text(
+                'fill all the fields please',
+                style: GoogleFonts.lemon(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFE0E0E0),
+              borderRadius: BorderRadius.circular(15),
+              border: hasError ? Border.all(color: Colors.red, width: 1.5) : null,
+            ),
+            child: TextField(
+              controller: controller,
+              obscureText: isPassword,
+              keyboardType: keyboardType,
+              textCapitalization: capitalization,
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: GoogleFonts.lemon(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey.shade500,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              ),
+              style: GoogleFonts.lemon(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMatriculeField() {
+    final hasError = _showErrors && _matriculeController.text.isEmpty;
+
+    // Role badge colour
+    Color badgeColor;
+    String badgeLabel;
+    switch (_detectedRole) {
+      case 'LECTURER':
+        badgeColor = const Color(0xFF1A1AFF);
+        badgeLabel = 'Lecturer detected';
+        break;
+      case 'STUDENT':
+        badgeColor = const Color(0xFF00AA44);
+        badgeLabel = 'Student detected';
+        break;
+      case 'INVALID':
+        badgeColor = Colors.red;
+        badgeLabel = 'Invalid matricule';
+        break;
+      default:
+        badgeColor = Colors.transparent;
+        badgeLabel = '';
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (hasError)
+            Padding(
+              padding: const EdgeInsets.only(left: 10, bottom: 5),
+              child: Text(
+                'fill all the fields please',
+                style: GoogleFonts.lemon(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFE0E0E0),
+              borderRadius: BorderRadius.circular(15),
+              border: hasError
+                  ? Border.all(color: Colors.red, width: 1.5)
+                  : _detectedRole == 'INVALID'
+                      ? Border.all(color: Colors.red, width: 1.5)
+                      : null,
+            ),
+            child: TextField(
+              controller: _matriculeController,
+              textCapitalization: TextCapitalization.characters,
+              decoration: InputDecoration(
+                hintText: 'enter matricule no.',
+                hintStyle: GoogleFonts.lemon(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey.shade500,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              ),
+              style: GoogleFonts.lemon(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          // Dynamic role badge
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: _detectedRole.isNotEmpty
+                ? Padding(
+                    key: ValueKey(_detectedRole),
+                    padding: const EdgeInsets.only(top: 8, left: 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: badgeColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          badgeLabel,
+                          style: GoogleFonts.lemon(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.italic,
+                            color: badgeColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(key: ValueKey('empty')),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authState = ref.watch(authStateProvider);
+    final isLoading = authState.isLoading;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -149,77 +307,119 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             children: [
               const SizedBox(height: 50),
 
-              // "nice to"
+              // Title: "nice to / meet you"
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('nice', style: titleBlackStyleLarge),
+                  Text(
+                    'nice',
+                    style: GoogleFonts.lemon(
+                      fontSize: 55,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      height: 1.1,
+                    ),
+                  ),
                   const SizedBox(width: 50),
-                  Text('to', style: titleBlackStyleSmall),
+                  Text(
+                    'to',
+                    style: GoogleFonts.lemon(
+                      fontSize: 45,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      height: 1.1,
+                    ),
+                  ),
                   const SizedBox(width: 40),
                 ],
               ),
-              
-              // "meet you"
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(width: 40),
-                  Text('meet', style: titleBlackStyleSmall),
+                  Text(
+                    'meet',
+                    style: GoogleFonts.lemon(
+                      fontSize: 45,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      height: 1.1,
+                    ),
+                  ),
                   const SizedBox(width: 50),
-                  Text('you', style: titleOrangeStyleLarge),
+                  Text(
+                    'you',
+                    style: GoogleFonts.lemon(
+                      fontSize: 55,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
+                      color: const Color(0xFFFF5100),
+                      height: 1.1,
+                    ),
+                  ),
                 ],
               ),
 
               const SizedBox(height: 30),
 
-              buildTextField('enter your name', _nameController),
-              buildTextField('enter matricule no', _matriculeController),
-              buildTextField('enter your email', _emailController),
-              buildTextField('enter your password', _passwordController, isPassword: true),
+              _buildTextField('enter your name', _nameController),
+              _buildMatriculeField(),
+              _buildTextField('enter your email', _emailController,
+                  keyboardType: TextInputType.emailAddress),
+              _buildTextField('enter your password', _passwordController,
+                  isPassword: true),
 
               const SizedBox(height: 40),
 
-              // Sign in Button
+              // Sign in button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _handleSignIn,
+                    onPressed: isLoading ? null : _handleSignIn,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFF5100),
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      elevation: 3, // Slight elevation for press effect
+                      elevation: 3,
                     ),
-                    child: Text(
-                      'sign in',
-                      style: GoogleFonts.lemon(
-                        fontSize: 35,
-                        fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 28,
+                            width: 28,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : Text(
+                            'sign in',
+                            style: GoogleFonts.lemon(
+                              fontSize: 35,
+                              fontWeight: FontWeight.w900,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              // Bottom Text
               GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
-                },
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                ),
                 child: Text(
-                  "have an account? login in",
+                  'have an account? login',
                   style: GoogleFonts.lemon(
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
@@ -228,32 +428,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ),
                 ),
               ),
-              
-              const SizedBox(height: 30),
+
+              const SizedBox(height: 40),
             ],
-          ),
-        ),
-      ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TellMeMoreScreen()),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFF5100),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        child: const Text(
-          'next',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
           ),
         ),
       ),

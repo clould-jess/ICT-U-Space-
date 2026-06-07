@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'Home_page.dart';
+import 'home_page.dart';
 
 class SelectionScreen extends StatelessWidget {
   const SelectionScreen({super.key});

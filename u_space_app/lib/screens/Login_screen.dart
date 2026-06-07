@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'Sign_in_screen.dart';
-import 'Tell_me_more_screen.dart';
-
-
+import 'sign_in_screen.dart';
+import 'forgot_password_screen.dart';
+import 'home_page.dart';
+import 'lecturer_home_page.dart';
+import 'admin_home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
 
@@ -34,16 +35,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         _emailController.text.trim(),
         _passwordController.text,
       );
-      
+
       if (!mounted) return;
-      // Navigate to Home Page on success
-      Navigator.pushReplacementNamed(context, '/home');
+      final role = ref.read(authStateProvider).value?.role ?? 'STUDENT';
+      _navigateByRole(role);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
       );
     }
+  }
+
+  void _navigateByRole(String role) {
+    final Widget home;
+    switch (role) {
+      case 'ADMIN':
+        home = const AdminHomePage();
+        break;
+      case 'LECTURER':
+        home = const LecturerHomePage();
+        break;
+      default:
+        home = const HomePage();
+    }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => home),
+      (_) => false,
+    );
   }
 
   @override
@@ -172,6 +192,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               buildTextField('enter your password', _passwordController, isPassword: true),
 
+              const SizedBox(height: 12),
+
+              // Forgot password link
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ForgotPasswordScreen(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'forgot password?',
+                  style: GoogleFonts.lemon(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    fontStyle: FontStyle.italic,
+                    color: const Color(0xFFFF5100),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 20),
 
               // SVG Image
@@ -233,29 +276,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               
               const SizedBox(height: 30),
             ],
-          ),
-        ),
-      ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TellMeMoreScreen()),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFF5100),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        child: const Text(
-          'next',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
           ),
         ),
       ),

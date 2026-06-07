@@ -15,9 +15,15 @@ final coursesProvider = FutureProvider<List<Course>>((ref) async {
   return apiService.getCourses();
 });
 
-final reservationProvider = StateNotifierProvider<ReservationNotifier, AsyncValue<void>>((ref) {
-  return ReservationNotifier(ref.read(apiServiceProvider));
+final reservationsProvider = FutureProvider<List<Reservation>>((ref) async {
+  final apiService = ref.read(apiServiceProvider);
+  return apiService.getReservations();
 });
+
+final reservationProvider =
+    StateNotifierProvider<ReservationNotifier, AsyncValue<void>>((ref) {
+      return ReservationNotifier(ref.read(apiServiceProvider));
+    });
 
 class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
   final ApiService _apiService;
