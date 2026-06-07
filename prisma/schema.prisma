@@ -3,32 +3,36 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String        @id @default(cuid())
-  name         String
-  email        String        @unique
-  password     String
-  role         String        // "STUDENT", "PREFECT", "LECTURER", "ADMIN"
-  push_subscription String?  // Stores stringified Web Push subscription object
-  academic_level String?     // e.g., "Level 1", "Level 2"
-  semester       String?     // e.g., "Fall26"
-  
-  coursesTaught Course[]      @relation("LecturerCourses")
-  enrolledIn   Course[]      @relation("StudentEnrollments")
-  reservations Reservation[] @relation("UserReservations")
-  sentMessages Message[]     @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
+  id                String        @id @default(cuid())
+  name              String
+  email             String        @unique
+  password          String
+  role              String        // "STUDENT", "PREFECT", "LECTURER", "ADMIN"
+  matricule         String?       @unique  // "ICTULEC..." for lecturers, "ICTU..." for students
+  push_subscription String?
+  academic_level    String?
+  semester          String?
+  major             String?       // department code e.g. "ICT", "ACC", "BMS"
+  booking_key       String?       @unique
+
+  coursesTaught     Course[]      @relation("LecturerCourses")
+  coursesDelegated  Course[]      @relation("CourseDelegate")
+  enrolledIn        Course[]      @relation("StudentEnrollments")
+  reservations      Reservation[] @relation("UserReservations")
+  sentMessages      Message[]     @relation("SentMessages")
+  receivedMessages  Message[]     @relation("ReceivedMessages")
 }
 
 model Hall {
   id             String           @id @default(cuid())
   name           String           @unique
   capacity       Int
-  features       String           // Stored as comma-separated string, e.g., "projector,AC"
+  features       String
   building_block String
 
   timetable      TimetableEntry[]
@@ -36,67 +40,72 @@ model Hall {
 }
 
 model Course {
-  id               String           @id @default(cuid())
-  code             String           @unique
-  name             String
-  enrolled_count   Int
-  
-  lecturer_id      String
-  lecturer         User             @relation("LecturerCourses", fields: [lecturer_id], references: [id])
-  
-  timetable        TimetableEntry[]
-  reservations     Reservation[]
-  notifications    Notification[]
-  students         User[]           @relation("StudentEnrollments")
+  id             String           @id @default(cuid())
+  code           String           @unique
+  name           String
+  enrolled_count Int
+
+  lecturer_id    String?
+  lecturer       User?            @relation("LecturerCourses", fields: [lecturer_id], references: [id], onDelete: SetNull)
+
+  delegate_id    String?
+  delegate       User?            @relation("CourseDelegate", fields: [delegate_id], references: [id], onDelete: SetNull)
+
+  timetable      TimetableEntry[]
+  reservations   Reservation[]
+  notifications  Notification[]
+  students       User[]           @relation("StudentEnrollments")
 }
 
 model Notification {
-  id          String   @id @default(cuid())
-  message     String
-  created_at  DateTime @default(now())
-  
-  course_id   String
-  course      Course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  message    String
+  created_at DateTime @default(now())
+
+  course_id  String
+  course     Course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
 }
 
 model TimetableEntry {
-  id          String   @id @default(cuid())
-  day_of_week String   // "Monday", "Tuesday", etc.
-  start_time  String   // "09:00"
-  end_time    String   // "11:00"
+  id          String @id @default(cuid())
+  day_of_week String
+  start_time  String
+  end_time    String
 
   course_id   String
-  course      Course   @relation(fields: [course_id], references: [id])
-  
+  course      Course @relation(fields: [course_id], references: [id])
+
   hall_id     String
-  hall        Hall     @relation(fields: [hall_id], references: [id])
+  hall        Hall   @relation(fields: [hall_id], references: [id])
 }
 
 model Reservation {
-  id          String   @id @default(cuid())
-  date        String   // "YYYY-MM-DD"
-  start_time  String   // "09:00"
-  end_time    String   // "11:00"
-  status      String   // "CONFIRMED", "CANCELED"
+  id         String  @id @default(cuid())
+  date       String
+  start_time String
+  end_time   String
+  status     String  // "CONFIRMED", "CANCELED"
+  type       String  @default("CLASS") // "CLASS", "EVENT"
+  event_name String?
 
-  hall_id     String
-  hall        Hall     @relation(fields: [hall_id], references: [id])
-  
-  course_id   String?
-  course      Course?  @relation(fields: [course_id], references: [id])
-  
+  hall_id    String
+  hall       Hall    @relation(fields: [hall_id], references: [id])
+
+  course_id  String?
+  course     Course? @relation(fields: [course_id], references: [id])
+
   reserved_by String
-  user        User     @relation("UserReservations", fields: [reserved_by], references: [id])
+  user        User    @relation("UserReservations", fields: [reserved_by], references: [id])
 }
 
 model Message {
   id          String   @id @default(cuid())
   content     String
   created_at  DateTime @default(now())
-  
+
   sender_id   String
   sender      User     @relation("SentMessages", fields: [sender_id], references: [id])
-  
-  receiver_id String?  // Optional receiver for direct messages
+
+  receiver_id String?
   receiver    User?    @relation("ReceivedMessages", fields: [receiver_id], references: [id])
 }

@@ -8,6 +8,8 @@ export default function StudentDashboard({ session, timetable, reservations, act
   const [loadingMagic, setLoadingMagic] = useState(false);
   const [magicError, setMagicError] = useState('');
 
+  const [selectedDayOffset, setSelectedDayOffset] = useState(0);
+
   const handleMagicButton = async () => {
     setLoadingMagic(true);
     setMagicError('');
@@ -26,6 +28,7 @@ export default function StudentDashboard({ session, timetable, reservations, act
 
   const getTodaySchedule = useMemo(() => {
     const today = new Date();
+    today.setDate(today.getDate() + selectedDayOffset);
     const dayOfWeek = today.toLocaleDateString('en-US', { weekday: 'long' });
     const dateString = today.toISOString().split('T')[0];
 
@@ -55,7 +58,7 @@ export default function StudentDashboard({ session, timetable, reservations, act
 
     const fullSchedule = [...todaysTimetable, ...todaysReservations];
     return fullSchedule.sort((a, b) => a.startTime.localeCompare(b.startTime));
-  }, [timetable, reservations]);
+  }, [timetable, reservations, selectedDayOffset]);
 
   const schedule = getTodaySchedule;
   const [upcomingClassReminder, setUpcomingClassReminder] = useState(null);
@@ -124,24 +127,35 @@ export default function StudentDashboard({ session, timetable, reservations, act
         
         {/* Horizontal Date Selector Placeholder */}
         <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '1rem', scrollbarWidth: 'none' }}>
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((day, i) => (
-            <div key={day} style={{ 
-              minWidth: '60px', 
-              padding: '0.75rem 0', 
-              borderRadius: '16px', 
-              backgroundColor: i === 0 ? 'var(--primary-blue)' : 'var(--surface-color)', 
-              color: i === 0 ? 'white' : 'var(--text-primary)',
-              textAlign: 'center',
-              boxShadow: i === 0 ? '0 4px 12px rgba(37, 99, 235, 0.3)' : '0 2px 8px rgba(0,0,0,0.04)',
-              border: i === 0 ? 'none' : '1px solid var(--border-color)'
-            }}>
-              <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem', opacity: i === 0 ? 0.9 : 0.6 }}>{day}</div>
-              <div style={{ fontSize: '1.2rem', fontWeight: '700' }}>{25 + i}</div>
-            </div>
-          ))}
+          {[0, 1, 2, 3, 4].map(offset => {
+            const d = new Date();
+            d.setDate(d.getDate() + offset);
+            const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+            const dateNum = d.getDate();
+            const isSelected = selectedDayOffset === offset;
+            return (
+              <button 
+                key={offset} 
+                onClick={() => setSelectedDayOffset(offset)}
+                style={{ 
+                  minWidth: '60px', 
+                  padding: '0.75rem 0', 
+                  borderRadius: '16px', 
+                  backgroundColor: isSelected ? 'var(--primary-blue)' : 'var(--surface-color)', 
+                  color: isSelected ? 'white' : 'var(--text-primary)',
+                  textAlign: 'center',
+                  boxShadow: isSelected ? '0 4px 12px rgba(37, 99, 235, 0.3)' : '0 2px 8px rgba(0,0,0,0.04)',
+                  border: isSelected ? 'none' : '1px solid var(--border-color)',
+                  cursor: 'pointer'
+                }}>
+                <div style={{ fontSize: '0.8rem', marginBottom: '0.25rem', opacity: isSelected ? 0.9 : 0.6 }}>{dayName}</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: '700' }}>{dateNum}</div>
+              </button>
+            );
+          })}
         </div>
 
-        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem' }}>Today</h3>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem' }}>{selectedDayOffset === 0 ? 'Today' : new Date(Date.now() + selectedDayOffset * 86400000).toLocaleDateString('en-US', { weekday: 'long' })}</h3>
 
         {schedule.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: '3rem 1rem' }}>

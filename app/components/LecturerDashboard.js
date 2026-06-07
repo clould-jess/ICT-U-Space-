@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 
-export default function LecturerDashboard({ session, initialHalls, initialCourses }) {
+export default function LecturerDashboard({ session, initialHalls, initialCourses, activeTab }) {
   const [selectedHall, setSelectedHall] = useState(null);
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [selectedCourseId, setSelectedCourseId] = useState('');
+  const [bookingKey, setBookingKey] = useState('');
+  
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,7 +37,8 @@ export default function LecturerDashboard({ session, initialHalls, initialCourse
           end_time: endTime,
           course_id: selectedCourseId,
           hall_id: selectedHall.id,
-          force_booking
+          force_booking,
+          booking_key: bookingKey
         })
       });
 
@@ -59,6 +62,29 @@ export default function LecturerDashboard({ session, initialHalls, initialCourse
       setLoading(false);
     }
   };
+
+  if (activeTab === 'courses') {
+    const myCourses = initialCourses.filter(course => course.lecturer_id === session.id);
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h2 style={{ fontSize: '2.25rem', fontWeight: '800', color: 'var(--primary-blue)', letterSpacing: '-0.025em' }}>My Courses</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+          {myCourses.length === 0 ? (
+            <p style={{ color: 'var(--text-secondary)' }}>You have no assigned courses.</p>
+          ) : (
+            myCourses.map(course => (
+              <div key={course.id} className="card" style={{ padding: '1.5rem', borderLeft: '4px solid var(--primary-blue)' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem' }}>{course.code} - {course.name}</h3>
+                <p style={{ color: 'var(--text-secondary)' }}>Enrolled Students: {course.enrolled_count}</p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -143,6 +169,12 @@ export default function LecturerDashboard({ session, initialHalls, initialCourse
                     <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>End Time</label>
                     <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="input-field" />
                   </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Booking Key / PIN</label>
+                  <input type="password" placeholder="Enter or create your unique booking key" value={bookingKey} onChange={e => setBookingKey(e.target.value)} className="input-field" />
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>If you haven't set one, the key you enter now will be saved to your profile.</p>
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>

@@ -3,6 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const prisma = new PrismaClient();
 
+function generateBookingKey() {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+
 async function main() {
   // Clear existing data
   await prisma.reservation.deleteMany();
@@ -15,11 +19,11 @@ async function main() {
 
   // Create admin
   const defaultPassword = 'naruto';
-  await prisma.user.create({ data: { name: 'Karel Jess', email: 'admin@school.edu', password: defaultPassword, role: 'ADMIN' } });
+  await prisma.user.create({ data: { name: 'Karel Jess', email: 'admin@school.edu', password: defaultPassword, role: 'ADMIN', booking_key: generateBookingKey() } });
   
   // Create prefect and student for testing
-  const prefect = await prisma.user.create({ data: { name: 'Prefect Peter', email: 'peter@student.school.edu', password: defaultPassword, role: 'PREFECT' } });
-  const student = await prisma.user.create({ data: { name: 'Student Sam', email: 'sam@student.school.edu', password: defaultPassword, role: 'STUDENT' } });
+  const prefect = await prisma.user.create({ data: { name: 'Prefect Peter', email: 'peter@student.school.edu', password: defaultPassword, role: 'PREFECT', booking_key: generateBookingKey() } });
+  const student = await prisma.user.create({ data: { name: 'Student Sam', email: 'sam@student.school.edu', password: defaultPassword, role: 'STUDENT', booking_key: generateBookingKey() } });
 
   // Read timetable data
   const dataPath = path.join(__dirname, 'timetable.json');
@@ -39,7 +43,8 @@ async function main() {
         name,
         email,
         password: defaultPassword,
-        role: 'LECTURER'
+        role: 'LECTURER',
+        booking_key: generateBookingKey()
       }
     });
     lecturerMap[name] = user.id;
@@ -64,10 +69,10 @@ async function main() {
       capacity = 30;
       features = 'studio equipment';
       building_block = 'Media Block';
-    } else if (name.includes('Sports Complex')) {
+    } else if (name.includes('FRENCH HALL')) {
       capacity = 500;
-      features = 'sports equipment';
-      building_block = 'Sports Block';
+      features = 'Projector';
+      building_block = 'Main Block';
     }
 
     const hall = await prisma.hall.create({
@@ -133,7 +138,8 @@ async function main() {
         name,
         enrolled_count: 50 + Math.floor(Math.random() * 50),
         lecturer_id: lecturerId,
-        students: { connect: [{ id: student.id }] }
+        delegate_id: prefect.id, // Assign prefect to all courses as delegate for testing
+        students: { connect: [{ id: student.id }, { id: prefect.id }] }
       }
     });
     courseMap[fullCourse] = course.id;

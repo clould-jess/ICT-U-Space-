@@ -18,7 +18,16 @@ export default function AdminDashboard({ session, initialHalls, initialCourses, 
   const [courseName, setCourseName] = useState('');
   const [courseEnrolled, setCourseEnrolled] = useState('');
   const [courseLecturerId, setCourseLecturerId] = useState('');
+  const [courseDelegateId, setCourseDelegateId] = useState('');
   
+  // New Event state
+  const [eventName, setEventName] = useState('');
+  const [eventDate, setEventDate] = useState('');
+  const [eventStart, setEventStart] = useState('');
+  const [eventEnd, setEventEnd] = useState('');
+  const [eventHallId, setEventHallId] = useState('');
+  const [reservations, setReservations] = useState([]);
+  const [reservationsFetched, setReservationsFetched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -27,6 +36,15 @@ export default function AdminDashboard({ session, initialHalls, initialCourses, 
   const [editCapacity, setEditCapacity] = useState('');
   
   const [updatingUserId, setUpdatingUserId] = useState(null);
+
+  // Fetch reservations on tab switch
+  if (activeTab === 'reservations' && !reservationsFetched && !loading) {
+    setLoading(true);
+    fetch('/api/reservations')
+      .then(res => res.json())
+      .then(data => { setReservations(data); setReservationsFetched(true); })
+      .finally(() => setLoading(false));
+  }
 
   const handleUpdateRole = async (userId, newRole) => {
     setUpdatingUserId(userId); setError(''); setSuccess('');
@@ -113,7 +131,8 @@ export default function AdminDashboard({ session, initialHalls, initialCourses, 
           code: courseCode,
           name: courseName,
           enrolled_count: parseInt(courseEnrolled),
-          lecturer_id: courseLecturerId
+          lecturer_id: courseLecturerId,
+          delegate_id: courseDelegateId || undefined
         })
       });
       const data = await res.json();
@@ -141,6 +160,70 @@ export default function AdminDashboard({ session, initialHalls, initialCourses, 
       setSuccess('Course deleted successfully!');
     } catch (err) {
       setError(err.message || 'Failed to delete course');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteReservation = async (resId) => {
+    if (!confirm('Are you sure you want to unbook this reservation?')) return;
+    setLoading(true); setError(''); setSuccess('');
+    try {
+      const res = await fetch(`/api/reservations/${resId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setReservations(reservations.filter(r => r.id !== resId));
+      setSuccess('Reservation unbooked successfully!');
+    } catch (err) {
+      setError(err.message || 'Failed to unbook reservation');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddEvent = async (e) => {
+    e.preventDefault();
+    setLoading(true); setError(''); setSuccess('');
+    try {
+      const res = await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: eventDate,
+          start_time: eventStart,
+          end_time: eventEnd,
+          hall_id: eventHallId,
+          event_name: eventName,
+          force_booking: true // Admins force book events
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      
+      setSuccess('Event booked successfully!');
+      setReservationsFetched(false); // force refetch
+      setEventName(''); setEventDate(''); setEventStart(''); setEventEnd(''); setEventHallId('');
+    } catch (err) {
+      setError(err.message || 'Failed to book event');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateCoursePersonnel = async (courseId, lecturerId, delegateId) => {
+    setLoading(true); setError(''); setSuccess('');
+    try {
+      const res = await fetch(`/api/courses/${courseId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lecturer_id: lecturerId, delegate_id: delegateId })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setCourses(courses.map(c => c.id === courseId ? { ...c, lecturer_id: data.course.lecturer_id, delegate_id: data.course.delegate_id, lecturer: users.find(u => u.id === data.course.lecturer_id) || c.lecturer } : c));
+      setSuccess('Course personnel updated successfully!');
+    } catch (err) {
+      setError(err.message || 'Failed to update course personnel');
     } finally {
       setLoading(false);
     }
@@ -249,6 +332,15 @@ export default function AdminDashboard({ session, initialHalls, initialCourses, 
                   ))}
                 </select>
               </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Class Delegate (Optional)</label>
+                <select value={courseDelegateId} onChange={e => setCourseDelegateId(e.target.value)} className="input-field">
+                  <option value="">Select a Delegate</option>
+                  {users.filter(u => u.role === 'STUDENT' || u.role === 'PREFECT').map(user => (
+                    <option key={user.id} value={user.id}>{user.name}</option>
+                  ))}
+                </select>
+              </div>
               <button type="submit" disabled={loading} className="btn-primary" style={{ marginTop: '0.5rem', padding: '1rem', fontSize: '1.05rem' }}>
                 {loading ? 'Adding...' : 'Save Course'}
               </button>
@@ -262,7 +354,24 @@ export default function AdminDashboard({ session, initialHalls, initialCourses, 
               <div key={course.id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem' }}>
                 <div>
                   <h4 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.25rem' }}>{course.code} - {course.name}</h4>
-                  {course.lecturer && <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Lecturer: {course.lecturer.name}</p>}
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                    <select 
+                      value={course.lecturer_id || ''} 
+                      onChange={e => handleUpdateCoursePersonnel(course.id, e.target.value, course.delegate_id)}
+                      className="input-field" style={{ padding: '0.3rem', width: 'auto', fontSize: '0.85rem' }}
+                    >
+                      <option value="">Select Lecturer</option>
+                      {users.filter(u => u.role === 'LECTURER' || u.role === 'ADMIN').map(user => <option key={user.id} value={user.id}>{user.name}</option>)}
+                    </select>
+                    <select 
+                      value={course.delegate_id || ''} 
+                      onChange={e => handleUpdateCoursePersonnel(course.id, course.lecturer_id, e.target.value)}
+                      className="input-field" style={{ padding: '0.3rem', width: 'auto', fontSize: '0.85rem' }}
+                    >
+                      <option value="">Select Delegate</option>
+                      {users.filter(u => u.role === 'STUDENT' || u.role === 'PREFECT').map(user => <option key={user.id} value={user.id}>{user.name}</option>)}
+                    </select>
+                  </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <span className="badge" style={{ backgroundColor: 'var(--text-primary)', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>{course.enrolled_count} students</span>
@@ -273,6 +382,72 @@ export default function AdminDashboard({ session, initialHalls, initialCourses, 
                     disabled={loading}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : activeTab === 'reservations' ? (
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          {/* Add Event Form */}
+          <div className="card" style={{ flex: 1, minWidth: '300px' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', color: 'var(--primary-blue)', letterSpacing: '-0.01em' }}>Force Book Event</h3>
+            <form onSubmit={handleAddEvent} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Event Name</label>
+                <input type="text" required value={eventName} onChange={e => setEventName(e.target.value)} className="input-field" placeholder="e.g. Matriculation Ceremony" />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Date</label>
+                <input type="date" required value={eventDate} onChange={e => setEventDate(e.target.value)} className="input-field" />
+              </div>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Start</label>
+                  <input type="time" required value={eventStart} onChange={e => setEventStart(e.target.value)} className="input-field" />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>End</label>
+                  <input type="time" required value={eventEnd} onChange={e => setEventEnd(e.target.value)} className="input-field" />
+                </div>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Space</label>
+                <select required value={eventHallId} onChange={e => setEventHallId(e.target.value)} className="input-field">
+                  <option value="">Select a Space</option>
+                  {halls.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}
+                </select>
+              </div>
+              <button type="submit" disabled={loading} className="btn-primary" style={{ marginTop: '0.5rem', padding: '1rem', fontSize: '1.05rem', backgroundColor: '#ef4444' }}>
+                {loading ? 'Processing...' : 'Force Book Now'}
+              </button>
+            </form>
+          </div>
+
+          {/* List of Reservations */}
+          <div style={{ flex: 2, minWidth: '350px', display: 'grid', gap: '1rem' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '0.5rem', color: 'var(--primary-blue)' }}>All Reservations</h3>
+            {reservations.length === 0 && <p>No reservations found.</p>}
+            {reservations.map(res => (
+              <div key={res.id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', borderLeft: res.type === 'EVENT' ? '4px solid #ef4444' : '4px solid var(--primary-blue)' }}>
+                <div>
+                  <h4 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.25rem' }}>
+                    {res.type === 'EVENT' ? res.event_name : (res.course?.code + ' - ' + res.course?.name)}
+                  </h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    {res.date} • {res.start_time} - {res.end_time} • {res.hall?.name}
+                  </p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Booked by: {res.user?.name}</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <button 
+                    onClick={() => handleDeleteReservation(res.id)}
+                    style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '4px', padding: '0.4rem 0.8rem', cursor: 'pointer', fontWeight: '600' }}
+                    title="Unbook Reservation"
+                    disabled={loading}
+                  >
+                    Unbook
                   </button>
                 </div>
               </div>

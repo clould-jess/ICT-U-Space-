@@ -1,15 +1,17 @@
 import { PrismaClient } from '@prisma/client';
-import { cookies } from 'next/headers';
+import { getSession, corsHeaders } from '../../../lib/auth';
 
 const prisma = new PrismaClient();
 
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
 export async function GET(request) {
   try {
-    const sessionCookie = (await cookies()).get('session');
-    if (!sessionCookie) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
-    const session = JSON.parse(sessionCookie.value);
+    const session = await getSession(request);
+    if (!session) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
 
-    // Fetch messages where user is either sender or receiver
     const messages = await prisma.message.findMany({
       where: {
         OR: [
@@ -25,23 +27,22 @@ export async function GET(request) {
       orderBy: { created_at: 'asc' }
     });
 
-    return new Response(JSON.stringify(messages), { status: 200 });
+    return new Response(JSON.stringify(messages), { status: 200, headers: corsHeaders });
   } catch (error) {
     console.error('Fetch messages error:', error);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500, headers: corsHeaders });
   }
 }
 
 export async function POST(request) {
   try {
-    const sessionCookie = (await cookies()).get('session');
-    if (!sessionCookie) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
-    const session = JSON.parse(sessionCookie.value);
+    const session = await getSession(request);
+    if (!session) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
 
     const { content, receiver_id } = await request.json();
 
     if (!content) {
-      return new Response(JSON.stringify({ error: 'Content is required' }), { status: 400 });
+      return new Response(JSON.stringify({ error: 'Content is required' }), { status: 400, headers: corsHeaders });
     }
 
     const newMessage = await prisma.message.create({
@@ -56,9 +57,9 @@ export async function POST(request) {
       }
     });
 
-    return new Response(JSON.stringify(newMessage), { status: 201 });
+    return new Response(JSON.stringify(newMessage), { status: 201, headers: corsHeaders });
   } catch (error) {
     console.error('Send message error:', error);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500, headers: corsHeaders });
   }
 }

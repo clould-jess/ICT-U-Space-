@@ -1,13 +1,16 @@
 import { PrismaClient } from '@prisma/client';
-import { cookies } from 'next/headers';
+import { getSession, corsHeaders } from '../../../lib/auth';
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
+export async function GET(request) {
   try {
-    const sessionCookie = (await cookies()).get('session');
-    if (!sessionCookie) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
-    const session = JSON.parse(sessionCookie.value);
+    const session = await getSession(request);
+    if (!session) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
 
     let notifications = [];
 
@@ -18,15 +21,15 @@ export async function GET() {
       });
 
       if (!student) {
-        return new Response(JSON.stringify({ error: 'User not found. Please log in again.' }), { status: 404 });
+        return new Response(JSON.stringify({ error: 'User not found. Please log in again.' }), { status: 404, headers: corsHeaders });
       }
 
       const courseIds = student.enrolledIn.map(c => c.id);
-
       notifications = await prisma.notification.findMany({
         where: { course_id: { in: courseIds } },
         orderBy: { created_at: 'desc' },
-        take: 20
+        take: 20,
+        include: { course: { select: { code: true, name: true } } }
       });
     } else if (session.role === 'LECTURER') {
       const courses = await prisma.course.findMany({
@@ -34,22 +37,23 @@ export async function GET() {
         select: { id: true }
       });
       const courseIds = courses.map(c => c.id);
-
       notifications = await prisma.notification.findMany({
         where: { course_id: { in: courseIds } },
         orderBy: { created_at: 'desc' },
-        take: 20
+        take: 20,
+        include: { course: { select: { code: true, name: true } } }
       });
     } else {
       notifications = await prisma.notification.findMany({
         orderBy: { created_at: 'desc' },
-        take: 20
+        take: 20,
+        include: { course: { select: { code: true, name: true } } }
       });
     }
 
-    return new Response(JSON.stringify(notifications), { status: 200 });
+    return new Response(JSON.stringify(notifications), { status: 200, headers: corsHeaders });
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch notifications' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Failed to fetch notifications' }), { status: 500, headers: corsHeaders });
   }
 }
