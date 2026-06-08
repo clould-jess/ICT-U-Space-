@@ -1,0 +1,35 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
+
+      - name: 🚀 Deploy Backend to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            echo "Successfully connected to VPS!"
+            
+            # Navigate to where your project is stored on the server
+            # Note: Change '/root/ICT-U-Space-' to the exact folder where your backend lives on the server
+            cd /root/ICT-U-Space- || exit
+            
+            # Pull the latest code from the GitHub repository
+            git pull origin main
+            
+            # Restart the Docker containers with the new code
+            docker compose up -d --build
+            
+            echo "Deployment successful!"
