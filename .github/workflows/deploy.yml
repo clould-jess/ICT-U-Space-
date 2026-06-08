@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: 🚚 Get latest code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🚀 Deploy Backend to VPS
         uses: appleboy/ssh-action@master
@@ -23,10 +23,11 @@ jobs:
             echo "Successfully connected to VPS!"
             
             # Navigate to where your project is stored on the server
-            # Note: Change '/root/ICT-U-Space-' to the exact folder where your backend lives on the server
             cd /root/ICT-U-Space- || exit
             
-            # Pull the latest code from the GitHub repository
+            # Fix git ownership and force a clean pull to prevent exit code 128
+            git config --global --add safe.directory /root/ICT-U-Space-
+            git reset --hard HEAD
             git pull origin main
             
             # Restart the Docker containers with the new code
