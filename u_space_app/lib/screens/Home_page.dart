@@ -27,7 +27,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool _isActiveNow(Reservation r) {
     final now = DateTime.now();
     final today = DateFormat('yyyy-MM-dd').format(now);
-    if (r.date != today || r.status != 'BOOKED') return false;
+    if (!r.date.startsWith(today) || r.status != 'BOOKED') return false;
     final startParts = r.startTime.split(':');
     final endParts = r.endTime.split(':');
     if (startParts.length < 2 || endParts.length < 2) return false;

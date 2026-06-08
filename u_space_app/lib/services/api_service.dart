@@ -19,10 +19,8 @@ class CapacityWarningException implements Exception {
 
 class ApiService {
   static String get baseUrl {
-    if (kIsWeb) return 'http://localhost:3000/api';
-    // Use the PC's Wi-Fi IP address so a physical Android phone can connect.
-    if (Platform.isAndroid) return 'http://192.168.88.191:3000/api';
-    return 'http://localhost:3000/api';
+    // Deployed VPS Backend
+    return 'http://109.199.115.217:3000/api';
   }
 
   Future<String?> getToken() async {
@@ -43,9 +41,9 @@ class ApiService {
   Map<String, String> _headers(String? token) {
     return {
       'Content-Type': 'application/json',
-      // Send the session JSON as x-session header — the backend reads it from
-      // here because browsers block manual Cookie header writes (Flutter web).
-      if (token != null) 'x-session': token,
+      // Send the session JSON as x-session header. We URI encode it because 
+      // names like "Tchakounté" contain non-ASCII characters which crash HTTP headers.
+      if (token != null) 'x-session': Uri.encodeComponent(token),
     };
   }
 
