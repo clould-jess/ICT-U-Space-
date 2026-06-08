@@ -23,7 +23,7 @@ jobs:
             echo "Successfully connected to VPS!"
             
             # IMPORTANT: Change this path to exactly where your backend is on the server!
-            TARGET_DIR="/root/ICT-U-Space-"
+            TARGET_DIR="/root/classroom-reservation"
             
             if [ ! -d "$TARGET_DIR" ]; then
               echo "::error::Directory $TARGET_DIR does not exist on the VPS! Please edit deploy.yml and change TARGET_DIR to your actual backend folder (e.g., /var/www/classroom-reservation)"
