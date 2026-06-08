@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/karel/.gemini/antigravity/scratch/classroom-reservation/**)",
+      "Bash(npx prisma *)",
+      "Bash(mkdir -p \"c:/Users/karel/.gemini/antigravity/scratch/classroom-reservation/app/api/auth/me\")",
+      "Bash(flutter analyze *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\karel\\.gemini\\antigravity\\scratch\\classroom-reservation\\app\\api\\auth",
+      "c:\\Users\\karel\\.gemini\\antigravity\\scratch\\classroom-reservation\\app\\api\\notifications"
+    ]
+  }
+}

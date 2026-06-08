@@ -1,7 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { getSession, corsHeaders } from '../../../../lib/auth';
 
-const prisma = new PrismaClient();
+async function requireAdmin() {
+  const sessionCookie = (await cookies()).get('session');
+  if (!sessionCookie) return null;
+  const session = JSON.parse(sessionCookie.value);
+  return session.role === 'ADMIN' ? session : null;
+}
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: corsHeaders });
@@ -70,5 +75,19 @@ export async function PUT(request) {
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ error: 'Failed to update hall' }), { status: 500, headers: corsHeaders });
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const admin = await requireAdmin();
+    if (!admin) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
+
+    const { id } = await request.json();
+    await prisma.hall.delete({ where: { id } });
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Failed to delete hall' }), { status: 500 });
   }
 }

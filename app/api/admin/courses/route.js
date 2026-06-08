@@ -1,7 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { getSession, corsHeaders } from '../../../../lib/auth';
 
-const prisma = new PrismaClient();
+async function requireAdmin() {
+  const sessionCookie = (await cookies()).get('session');
+  if (!sessionCookie) return null;
+  const session = JSON.parse(sessionCookie.value);
+  return session.role === 'ADMIN' ? session : null;
+}
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: corsHeaders });
@@ -17,6 +22,10 @@ export async function POST(request) {
     }
 
     const { code, name, enrolled_count, lecturer_id } = await request.json();
+
+    if (!code || !name || !enrolled_count || !lecturer_id) {
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
+    }
 
     const course = await prisma.course.create({
       data: { code, name, enrolled_count: enrolled_count ?? 0, lecturer_id: lecturer_id ?? null },

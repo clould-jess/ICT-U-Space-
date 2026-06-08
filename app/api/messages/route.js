@@ -17,7 +17,7 @@ export async function GET(request) {
         OR: [
           { sender_id: session.id },
           { receiver_id: session.id },
-          { receiver_id: null } // broadcast messages
+          { receiver_id: null }
         ]
       },
       include: {
@@ -46,11 +46,7 @@ export async function POST(request) {
     }
 
     const newMessage = await prisma.message.create({
-      data: {
-        content,
-        sender_id: session.id,
-        receiver_id: receiver_id || null
-      },
+      data: { content: content.trim(), sender_id: session.id, receiver_id: receiver_id || null },
       include: {
         sender: { select: { id: true, name: true, role: true } },
         receiver: { select: { id: true, name: true, role: true } }

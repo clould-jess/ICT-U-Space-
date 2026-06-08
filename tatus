@@ -1,0 +1,73 @@
+[33mcommit 1fce0f35d27cbeeb8d2ea1c201315ed4a68f3ca5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Gaetan <fkengnegaetan@gmail.com>
+Date:   Sun Jun 7 23:22:06 2026 +0100
+
+    My local updates
+
+[33mcommit 60325399e2a3cb1febf82031bea761896e63dc0d[m
+Author: Gaetan <fkengnegaetan@gmail.com>
+Date:   Sun Jun 7 22:33:04 2026 +0100
+
+    done
+
+[33mcommit e899070e727e05e96b3f8405630fc0b31eb917ad[m
+Author: Gaetan <fkengnegaetan@gmail.com>
+Date:   Fri Jun 5 13:18:20 2026 +0100
+
+    updated
+
+[33mcommit 77be04f754af46fd376b2a9a87f5c57108df512c[m
+Author: Gaetan <fkengnegaetan@gmail.com>
+Date:   Fri Jun 5 13:02:18 2026 +0100
+
+    updated
+
+[33mcommit 46cb6ec90c2b6b0f039b4a4e957e870c965ddb76[m
+Author: Gaetan <fkengnegaetan@gmail.com>
+Date:   Sun May 10 14:00:31 2026 +0100
+
+    sync
+
+[33mcommit e352913376a78503ae52a0749873709c9a2290a9[m
+Merge: 46f6027 1229ad6
+Author: Gaetan <fkengnegaetan@gmail.com>
+Date:   Sun May 10 12:42:29 2026 +0100
+
+    Fixed merge conflicts by accepting current changes
+
+[33mcommit 46f6027dfa20bb7f7f3633625712d4aa9e6de3a3[m
+Author: Gaetan <fkengnegaetan@gmail.com>
+Date:   Sun May 10 12:31:01 2026 +0100
+
+    Save local changes before pulling remote updates
+
+[33mcommit 1229ad69d61cc025bf7943a328efa21b2faae813[m
+Author: Karel Jess Bissakonou <kareljess06@gmail.com>
+Date:   Sun May 10 10:54:58 2026 +0100
+
+    feat: notification reminders, UI polish, course management fixes
+
+[33mcommit 129c892eadf4497be3a6872ac4eb4555cf683436[m
+Merge: 17a2672 8a2a06c
+Author: Karel Jess Bissakonou <kareljess06@gmail.com>
+Date:   Sat Apr 25 17:33:30 2026 +0100
+
+    Merge remote-tracking branch 'origin/main' and resolve conflict in README.md
+
+[33mcommit 17a2672e24ba2d4ed8016a6f0036c04200c2bc6e[m
+Author: Karel Jess Bissakonou <kareljess06@gmail.com>
+Date:   Sat Apr 25 17:31:20 2026 +0100
+
+    Initial commit: Add classroom reservation system
+
+[33mcommit 8a2a06c77b7c47c3502c9a90b3cc6a25f443d895[m
+Author: GEGE260 <Enamagarrett@gmail.com>
+Date:   Fri Apr 24 08:54:03 2026 +0100
+
+    Update project title in README.md
+
+[33mcommit a62b6fb11d9b8d09eaf0bf41c621156a2169b4fa[m
+Author: Karel Jess Bissakonou <kareljess06@gmail.com>
+Date:   Fri Apr 24 08:04:02 2026 +0100
+
+    Initial commit

@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import { getSession, corsHeaders } from '../../../lib/auth';
 import ReservationService from '../../../lib/services/ReservationService';
 
-const prisma = new PrismaClient();
 const reservationService = new ReservationService();
 
 export async function OPTIONS() {
@@ -30,7 +29,6 @@ export async function POST(request) {
       }
       return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: corsHeaders });
     }
-
   } catch (error) {
     console.error('Reservation API error:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500, headers: corsHeaders });
@@ -55,5 +53,26 @@ export async function GET(request) {
     return new Response(JSON.stringify(reservations), { status: 200, headers: corsHeaders });
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Failed to fetch reservations' }), { status: 500, headers: corsHeaders });
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const sessionCookie = (await cookies()).get('session');
+    if (!sessionCookie) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    const session = JSON.parse(sessionCookie.value);
+
+    const { id } = await request.json();
+    const reservation = await prisma.reservation.findUnique({ where: { id } });
+
+    if (!reservation) return new Response(JSON.stringify({ error: 'Not found' }), { status: 404 });
+    if (reservation.reserved_by !== session.id && session.role !== 'ADMIN') {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
+    }
+
+    await prisma.reservation.update({ where: { id }, data: { status: 'CANCELED' } });
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to cancel reservation' }), { status: 500 });
   }
 }

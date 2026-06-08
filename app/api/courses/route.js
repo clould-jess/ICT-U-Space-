@@ -12,7 +12,6 @@ export async function GET(request) {
     const session = await getSession(request);
     if (!session) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
 
-    // If lecturer, only return their courses. Otherwise return all courses.
     const courses = await prisma.course.findMany({
       where: session.role === 'LECTURER' ? { lecturer_id: session.id } : undefined,
       include: {

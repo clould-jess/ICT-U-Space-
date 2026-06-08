@@ -2,8 +2,11 @@
 import { useState } from 'react';
 import SettingsButton from './SettingsButton';
 
-export default function Sidebar({ session, activeTab, setActiveTab, isOpen }) {
-  const [discussionsCollapsed, setDiscussionsCollapsed] = useState(false);
+const Icon = ({ d, viewBox = "0 0 24 24" }) => (
+  <svg width="18" height="18" viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {typeof d === 'string' ? <path d={d} /> : d}
+  </svg>
+);
 
   const navLinks = [];
   if (session.role === 'ADMIN') {
@@ -37,71 +40,75 @@ export default function Sidebar({ session, activeTab, setActiveTab, isOpen }) {
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       overflow: 'hidden',
       position: 'relative',
-      zIndex: 40
+      zIndex: 40,
+      flexShrink: 0
     }}>
-      <div style={{
-        width: '260px',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '1.5rem 1rem',
-        color: '#e3e3e3',
-        fontFamily: 'var(--font-geist-sans), sans-serif',
-      }}>
-      <div style={{
-        padding: '0.75rem 1rem',
-        marginBottom: '1.5rem',
-        color: '#fff',
-        fontSize: '1.5rem',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        borderBottom: '1px solid #333',
-        paddingBottom: '1rem'
-      }}>
-        ICT-U Space
-      </div>
+      <div style={{ width: '260px', height: '100%', display: 'flex', flexDirection: 'column', padding: '1.5rem 1rem', color: '#e3e3e3' }}>
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {navLinks.map(link => (
-            <li key={link.id}>
-              <button
-                onClick={() => setActiveTab(link.id)}
-                style={{
-                  width: '100%', textAlign: 'left', padding: '0.6rem 0.75rem',
-                  backgroundColor: activeTab === link.id ? '#2a2a2a' : 'transparent',
-                  color: activeTab === link.id ? '#fff' : '#a3a3a3',
-                  border: 'none', borderRadius: '6px', fontSize: '0.95rem',
-                  display: 'flex', alignItems: 'center', gap: '0.75rem',
-                  cursor: 'pointer', transition: 'all 0.2s'
-                }}
-                onMouseOver={e => { if (activeTab !== link.id) { e.currentTarget.style.backgroundColor = '#222'; e.currentTarget.style.color = '#fff'; } }}
-                onMouseOut={e => { if (activeTab !== link.id) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#a3a3a3'; } }}
-              >
-                <span>{link.icon}</span>
-                {link.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+        {/* Logo */}
+        <div style={{ padding: '0.75rem 1rem', marginBottom: '1.5rem', color: '#fff', fontSize: '1.4rem', fontWeight: 'bold', textAlign: 'center', borderBottom: '1px solid #333', paddingBottom: '1rem' }}>
+          ICT-U Space
+        </div>
 
-      </div>
+        {/* User info pill */}
+        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '0.75rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1rem', color: 'white', flexShrink: 0 }}>
+            {session.name.charAt(0).toUpperCase()}
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{session.name}</div>
+            <div style={{ fontSize: '0.72rem', color: '#888' }}>{session.role}</div>
+          </div>
+        </div>
 
-      <div style={{ borderTop: '1px solid #333', paddingTop: '1rem', marginTop: '1rem' }}>
-        <form action="/api/auth/logout" method="POST">
-          <button type="submit" style={{
-            width: '100%', padding: '0.6rem',
-            background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px',
-            color: '#ef4444', fontSize: '0.9rem', cursor: 'pointer',
-            transition: 'all 0.2s', fontWeight: 'bold'
-          }}
-          onMouseOver={e => { e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'; }}
-          onMouseOut={e => { e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'; }}
-          >
-            Log Out
-          </button>
-        </form>
-      </div>
+        {/* Nav links */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            {navLinks.map(link => (
+              <li key={link.id}>
+                <button
+                  onClick={() => setActiveTab(link.id)}
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '0.65rem 0.75rem',
+                    backgroundColor: activeTab === link.id ? 'rgba(255,255,255,0.12)' : 'transparent',
+                    color: activeTab === link.id ? '#fff' : '#a3a3a3',
+                    border: activeTab === link.id ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
+                    borderRadius: '8px', fontSize: '0.92rem',
+                    display: 'flex', alignItems: 'center', gap: '0.75rem',
+                    cursor: 'pointer', transition: 'all 0.15s',
+                    fontWeight: activeTab === link.id ? '600' : '400'
+                  }}
+                  onMouseOver={e => { if (activeTab !== link.id) { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#fff'; } }}
+                  onMouseOut={e => { if (activeTab !== link.id) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#a3a3a3'; } }}
+                >
+                  <span style={{ opacity: activeTab === link.id ? 1 : 0.7 }}>{link.icon}</span>
+                  {link.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Bottom: settings + logout */}
+        <div style={{ borderTop: '1px solid #333', paddingTop: '1rem', marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {(session.role === 'STUDENT' || session.role === 'LECTURER' || session.role === 'PREFECT') && (
+            <SettingsButton session={session} />
+          )}
+          <form action="/api/auth/logout" method="POST">
+            <button type="submit" style={{
+              width: '100%', padding: '0.6rem',
+              background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px',
+              color: '#ef4444', fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s', fontWeight: '600',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
+            }}
+            onMouseOver={e => { e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'; }}
+            onMouseOut={e => { e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'; }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+              Log Out
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,8 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 import DashboardLayout from './components/DashboardLayout';
 import PushNotificationPrompt from './components/PushNotificationPrompt';
-
-const prisma = new PrismaClient();
 
 export default async function Home() {
   const sessionCookie = (await cookies()).get('session');

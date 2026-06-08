@@ -18,7 +18,7 @@ export async function PUT(request, { params }) {
       return new Response(JSON.stringify({ error: 'Forbidden. Admin access required.' }), { status: 403, headers: corsHeaders });
     }
 
-    const id = params.id;
+    const { id } = await params;
     const { role } = await request.json();
 
     if (!role || !['STUDENT', 'PREFECT', 'LECTURER', 'ADMIN'].includes(role)) {
